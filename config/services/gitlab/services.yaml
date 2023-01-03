@@ -1,0 +1,37 @@
+services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+
+    App\Gitlab\Client\HttpClientFactory: ~
+
+    App\Gitlab\Serializer\:
+        resource: '%kernel.project_dir%/src/Gitlab/Serializer'
+
+    gitlab.http_client:
+        class: 'Symfony\Component\HttpClient\ScopingHttpClient'
+        decorates: 'Symfony\Contracts\HttpClient\HttpClientInterface'
+        decoration_inner_name: 'gitlab.http_client.inner'
+        factory: ['@App\Gitlab\Client\HttpClientFactory', 'create']
+        arguments:
+            $client: '@gitlab.http_client.inner'
+
+    App\Gitlab\Client\MergeRequest\QueryHandler\:
+        resource: '%kernel.project_dir%/src/Gitlab/Client/MergeRequest/QueryHandler/**/*Handler.php'
+        autoconfigure: false
+        tags:
+            - { name: 'messenger.message_handler', bus: 'query.bus' }
+
+#    App\Gitlab\Client\MergeRequest\CommandHandler\:
+#        resource: '%kernel.project_dir%/src/Gitlab/Client/MergeRequest/CommandHandler/**/*Handler.php'
+#        autoconfigure: false
+#        tags:
+#            - { name: 'messenger.message_handler', bus: 'command.bus' }
+
+    App\Gitlab\Config\Loader:
+        arguments:
+            $configDirectory: '%kernel.project_dir%/user-config'
+
+    App\Gitlab\Config\Config:
+        class: 'App\Gitlab\Config\Config'
+        factory: ['@App\Gitlab\Config\Loader', 'load']

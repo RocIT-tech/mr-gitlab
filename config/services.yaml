@@ -1,0 +1,20 @@
+services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+
+    App\Cli\:
+        resource: '%kernel.project_dir%/src/Cli'
+
+    App\Git\Serializer\:
+        resource: '%kernel.project_dir%/src/Git/Serializer'
+
+    App\Metrics\Gitlab\:
+        resource: '%kernel.project_dir%/src/Metrics/Gitlab'
+        tags: ['metrics.gitlab']
+
+    App\Metrics\StatsAggregator: ~
+
+    App\Metrics\MetricsAggregator:
+        arguments:
+            $metrics: !tagged_iterator { tag: 'metrics.gitlab' }
