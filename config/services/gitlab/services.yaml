@@ -28,10 +28,10 @@ services:
 #        tags:
 #            - { name: 'messenger.message_handler', bus: 'command.bus' }
 
-    App\Gitlab\Config\Loader:
+    App\Gitlab\Config\FilesystemLoader:
         arguments:
             $configDirectory: '%kernel.project_dir%/user-config'
 
     App\Gitlab\Config\Config:
         class: 'App\Gitlab\Config\Config'
-        factory: ['@App\Gitlab\Config\Loader', 'load']
+        factory: ['@App\Gitlab\Config\FilesystemLoader', 'load']

@@ -15,7 +15,7 @@ use function trim;
 trait ParseNoteTrait
 {
     /**
-     * @return array{Severity, Category[]}
+     * @return array{Severity, non-empty-array<int, Category>}
      */
     private function parseNoteForLabels(string $note): array
     {
@@ -33,12 +33,12 @@ trait ParseNoteTrait
                 $labelList = explode(',', $label);
                 $labelList = array_map(
                     static fn(string $label): string => trim($label),
-                    $labelList
+                    $labelList,
                 );
 
                 return [...$labels, ...$labelList];
             },
-            []
+            [],
         );
 
         $severity   = Severity::SEVERITY_NONE;
@@ -51,7 +51,10 @@ trait ParseNoteTrait
             }
 
             if (Category::hasMap($label) === true) {
-                $categories[] = Category::tryMap($label);
+                $category = Category::tryMap($label);
+                if (null !== $category) {
+                    $categories[] = $category;
+                }
                 continue;
             }
         }

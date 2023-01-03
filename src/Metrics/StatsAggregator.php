@@ -14,6 +14,7 @@ final class StatsAggregator
 {
     use ParseNoteTrait;
 
+    /** @var WeakMap<Details, StatsResult> */
     private WeakMap $cache;
 
     public function __construct()

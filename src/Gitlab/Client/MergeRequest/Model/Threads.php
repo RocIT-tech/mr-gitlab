@@ -11,6 +11,9 @@ use Traversable;
 use function array_filter;
 use function count;
 
+/**
+ * @implements IteratorAggregate<int, Thread>
+ */
 final class Threads implements IteratorAggregate, Countable
 {
     /**

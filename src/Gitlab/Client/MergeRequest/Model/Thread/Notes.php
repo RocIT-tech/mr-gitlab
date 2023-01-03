@@ -6,11 +6,15 @@ namespace App\Gitlab\Client\MergeRequest\Model\Thread;
 
 use ArrayIterator;
 use Countable;
+use Exception;
 use IteratorAggregate;
 use Traversable;
 use function count;
 use function reset;
 
+/**
+ * @implements IteratorAggregate<int, Note>
+ */
 final class Notes implements IteratorAggregate, Countable
 {
     /**
@@ -27,6 +31,10 @@ final class Notes implements IteratorAggregate, Countable
 
     public function first(): Note
     {
+        if ($this->isEmpty() === true) {
+            throw new Exception('Something went wrong.');
+        }
+
         return reset($this->notes);
     }
 

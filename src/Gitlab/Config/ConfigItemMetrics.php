@@ -11,6 +11,9 @@ final class ConfigItemMetrics
     /** @var array<string> */
     private array $disabledMetrics = [];
 
+    /**
+     * @param array<string, array{enabled?: bool}> $metricsConfigurations
+     */
     public function __construct(
         array $metricsConfigurations = [],
     ) {

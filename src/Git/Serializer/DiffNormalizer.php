@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Git\Serializer;
 
 use App\Gitlab\Client\MergeRequest\Model\Change\Diff;
+use Exception;
 use Symfony\Component\Serializer\Normalizer\DenormalizerInterface;
 use function array_pop;
 use function count;
@@ -35,10 +36,16 @@ final class DiffNormalizer implements DenormalizerInterface
 
     /**
      * @return int[]
+     *
+     * @throws Exception
      */
     private function parse(string $string): array
     {
         $lines = preg_split('(\r\n|\r|\n)', $string);
+
+        if (false === $lines) {
+            throw new Exception('Something went wrong.');
+        }
 
         if ([] !== $lines && '' === $lines[count($lines) - 1]) {
             array_pop($lines);
@@ -55,6 +62,7 @@ final class DiffNormalizer implements DenormalizerInterface
                 match ($modifier) {
                     '-' => ++$removed,
                     '+' => ++$added,
+                    default => throw new Exception('Something went wrong.'),
                 };
             }
         }

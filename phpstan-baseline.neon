@@ -1,0 +1,38 @@
+parameters:
+	ignoreErrors:
+		-
+			message: "#^Cannot cast mixed to string\\.$#"
+			count: 1
+			path: src/Cli/ParseMergeRequest.php
+
+		-
+			message: "#^Method [^:]+\\:\\:supportsDenormalization\\(\\) has parameter \\$context with no value type specified in iterable type array\\.$#"
+
+		-
+			message: "#^Method [^:]+\\:\\:denormalize\\(\\) has parameter \\$data with no value type specified in iterable type array\\.$#"
+
+		-
+			message: "#^Method App\\\\Gitlab\\\\Client\\\\MergeRequest\\\\Model\\\\Thread\\\\Notes\\:\\:first\\(\\) should return App\\\\Gitlab\\\\Client\\\\MergeRequest\\\\Model\\\\Thread\\\\Note but returns App\\\\Gitlab\\\\Client\\\\MergeRequest\\\\Model\\\\Thread\\\\Note\\|false\\.$#"
+			count: 1
+			path: src/Gitlab/Client/MergeRequest/Model/Thread/Notes.php
+
+		-
+			message: "#^Cannot access offset '[a-zA-Z-_]+' on array\\{scheme\\?\\: string, host\\?\\: string, port\\?\\: int\\<0, 65535\\>, user\\?\\: string, pass\\?\\: string, path\\?\\: string, query\\?\\: string, fragment\\?\\: string\\}\\|false\\.$#"
+
+		-
+			message: "#^Parameter \\#2 \\$array of function array_key_exists expects array, array\\<string, int\\|string\\>\\|false given\\.$#"
+
+		-
+			message: "#^Parameter \\#1 \\$string of function strtolower expects string, string\\|null given\\.$#"
+			count: 1
+			path: src/Metrics/Category.php
+
+		-
+			message: "#^Parameter \\#1 \\$string of function trim expects string, string\\|null given\\.$#"
+			count: 1
+			path: src/Metrics/Category.php
+
+		-
+			message: "#^Parameter \\#3 \\$subject of function preg_replace expects array\\|string, string\\|null given\\.$#"
+			count: 1
+			path: src/Metrics/Category.php

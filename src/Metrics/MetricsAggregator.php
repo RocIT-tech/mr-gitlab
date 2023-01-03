@@ -18,6 +18,9 @@ final class MetricsAggregator
     ) {
     }
 
+    /**
+     * @return iterable<string, MetricResult>
+     */
     public function getResult(Details $mergeRequestDetails): iterable
     {
         $config = $this->config->getByHost($mergeRequestDetails->web_url);

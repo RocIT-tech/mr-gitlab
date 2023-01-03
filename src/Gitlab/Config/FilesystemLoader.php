@@ -9,7 +9,7 @@ use Symfony\Component\Finder\Finder;
 use function json_decode;
 use const JSON_THROW_ON_ERROR;
 
-final class Loader
+final class FilesystemLoader
 {
     public function __construct(
         private readonly string $configDirectory,
@@ -31,6 +31,7 @@ final class Loader
                 throw new Exception("`{$configurationFile}` configuration file is not readable.");
             }
 
+            /** @var array{name: string, host: string, token: string, metrics?: array<string, array{enabled?: bool}>} $configurationContent */
             $configurationContent = json_decode(
                 $configurationFile->getContents(),
                 associative: true,

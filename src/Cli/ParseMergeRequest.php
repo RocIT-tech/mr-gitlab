@@ -60,7 +60,7 @@ final class ParseMergeRequest extends Command
     {
         $io = new SymfonyStyle($input, $output);
 
-        $mergeRequestUrl = MergeRequestUrl::fromRaw($input->getArgument('url'));
+        $mergeRequestUrl = MergeRequestUrl::fromRaw((string) $input->getArgument('url'));
 
         $getDetailsQuery = new GetDetailsQuery(
             projectId: $mergeRequestUrl->projectId,
