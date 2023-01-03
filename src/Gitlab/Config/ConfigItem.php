@@ -7,9 +7,15 @@ namespace App\Gitlab\Config;
 final class ConfigItem
 {
     public function __construct(
-        public readonly string $name,
-        public readonly string $host,
-        public readonly string $token
+        public readonly string            $name,
+        public readonly string            $host,
+        public readonly string            $token,
+        public readonly ConfigItemMetrics $configMetrics,
     ) {
+    }
+
+    public function isMetricDisabled(string $name): bool
+    {
+        return $this->configMetrics->isMetricDisabled($name);
     }
 }

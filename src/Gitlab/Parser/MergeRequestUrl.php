@@ -12,7 +12,7 @@ final class MergeRequestUrl
     public function __construct(
         public readonly string $projectId,
         public readonly string $mergeRequestIid,
-        public readonly string $baseUrl
+        public readonly string $baseUrl,
     ) {
     }
 
@@ -37,13 +37,13 @@ final class MergeRequestUrl
         preg_match(
             '#^/(?<projectId>.*)/-/merge_requests/(?<mergeRequestIid>[^/]*)/?.*$#',
             $parsedUrl['path'],
-            $matches
+            $matches,
         );
 
         return new self(
             $matches['projectId'],
             $matches['mergeRequestIid'],
-            $baseUrl
+            $baseUrl,
         );
     }
 }

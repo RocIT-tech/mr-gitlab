@@ -37,11 +37,12 @@ final class Loader
                 flags: JSON_THROW_ON_ERROR,
             );
 
-            $config->push(
-                host: $configurationContent['host'],
+            $config->push(new ConfigItem(
                 name: $configurationContent['name'],
+                host: $configurationContent['host'],
                 token: $configurationContent['token'],
-            );
+                configMetrics: new ConfigItemMetrics($configurationContent['metrics'] ?? [])
+            ));
         }
 
         return $config;
