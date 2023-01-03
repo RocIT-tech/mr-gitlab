@@ -9,3 +9,11 @@
 /var/
 /vendor/
 ###< symfony/framework-bundle ###
+
+###> phpunit/phpunit ###
+/.phpunit.cache
+###< phpunit/phpunit ###
+
+###> infection/infection ###
+/.infection
+###< infection/infection ###

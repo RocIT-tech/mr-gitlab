@@ -26,8 +26,10 @@
         "symfony/yaml": "^6.2"
     },
     "require-dev": {
+        "infection/infection": "^0.26.16",
         "phpstan/phpstan": "^1.9",
         "phpstan/phpstan-symfony": "^1.2",
+        "phpunit/phpunit": "^9.5",
         "symfony/debug-bundle": "^6.2",
         "symfony/var-dumper": "^6.2"
     },
@@ -38,7 +40,8 @@
         },
         "sort-packages": true,
         "allow-plugins": {
-            "symfony/flex": true
+            "symfony/flex": true,
+            "infection/extension-installer": true
         }
     },
     "autoload": {

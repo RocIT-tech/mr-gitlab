@@ -118,3 +118,11 @@ In the `./user-config/` directory create as many files you need to configure you
 ```bash
 $ ./bin/console gitlab:merge-request:parse -h
 ```
+
+## Tests
+
+```shell
+$ php -dmemory_limit=-1 ./vendor/bin/phpstan; 
+$ ./vendor/bin/phpunit; 
+$ ./vendor/bin/infection --only-covered;
+```

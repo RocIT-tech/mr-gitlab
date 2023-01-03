@@ -29,7 +29,7 @@ final class Thread
         return array_reduce(
             iterator_to_array($this->notes),
             static fn(bool $result, Note $note): bool => $result && $note->resolved,
-            initial: true
+            true
         );
     }
 }
