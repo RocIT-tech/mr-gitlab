@@ -5,14 +5,24 @@ declare(strict_types=1);
 namespace App\Metrics\Gitlab;
 
 use App\Gitlab\Client\MergeRequest\Model\Details;
-use App\Metrics\MetricInterface;
+use App\Metrics\MetricCalculatorInterface;
 use App\Metrics\MetricResult;
 
-final class LinesAdded implements MetricInterface
+final class LinesAdded implements MetricCalculatorInterface
 {
     public function name(): string
     {
         return 'Lines Added';
+    }
+
+    public function description(): string
+    {
+        return 'Nombre de lignes ajoutées';
+    }
+
+    public function getDefaultConstraint(): string
+    {
+        return 'value < 500';
     }
 
     public function result(Details $mergeRequestDetails): MetricResult
@@ -20,12 +30,7 @@ final class LinesAdded implements MetricInterface
         $linesAdded = $mergeRequestDetails->changes->totalDiff()->added;
 
         return new MetricResult(
-            success: $linesAdded < 500,
-            expectedValue: '< 500',
             currentValue: (string) $linesAdded,
-            description: <<<TXT
-            Nombre de lignes ajoutées
-            TXT
         );
     }
 

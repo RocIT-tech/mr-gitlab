@@ -7,8 +7,10 @@ namespace App\Cli;
 use App\Gitlab\Client\MergeRequest\Model\Details;
 use App\Gitlab\Client\MergeRequest\Query\GetDetailsQuery;
 use App\Gitlab\Parser\MergeRequestUrl;
+use App\Metrics\MetricResult;
 use App\Metrics\MetricsAggregator;
 use App\Metrics\StatsAggregator;
+use App\Metrics\ValidatedMetric;
 use Spatie\Emoji\Emoji;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
@@ -73,14 +75,15 @@ final class ParseMergeRequest extends Command
 
         $io->title($mergeRequestDetails->web_url);
 
-        $results = $this->metricsAggregator->getResult($mergeRequestDetails);
+        /** @var iterable<string, ValidatedMetric> $metricResults */
+        $metricResults = $this->metricsAggregator->getResult($mergeRequestDetails);
 
         $countSuccess = 0;
         $countTotal   = 0;
 
         $rows = [];
 
-        foreach ($results as $metricName => $metricResult) {
+        foreach ($metricResults as $metricName => $metricResult) {
             $countTotal++;
             if (true === $metricResult->success) {
                 $countSuccess++;
@@ -89,8 +92,8 @@ final class ParseMergeRequest extends Command
             $rows[] = [
                 $metricName,
                 $metricResult->description,
-                $metricResult->expectedValue,
-                $metricResult->currentValue,
+                $metricResult->constraint,
+                $metricResult->currentValue->currentValue,
                 true === $metricResult->success ? Emoji::checkMark() : Emoji::crossMark(),
             ];
         }

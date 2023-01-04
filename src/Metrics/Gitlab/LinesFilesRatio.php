@@ -5,18 +5,27 @@ declare(strict_types=1);
 namespace App\Metrics\Gitlab;
 
 use App\Gitlab\Client\MergeRequest\Model\Details;
-use App\Metrics\MetricInterface;
+use App\Metrics\MetricCalculatorInterface;
 use App\Metrics\MetricResult;
-use Exception;
 use LogicException;
 use function abs;
 use function count;
 
-final class LinesFilesRatio implements MetricInterface
+final class LinesFilesRatio implements MetricCalculatorInterface
 {
     public function name(): string
     {
         return 'Lines / Files Ratio';
+    }
+
+    public function description(): string
+    {
+        return 'Ratio entre la somme des lignes modifiées et le nombre de fichiers modifiés';
+    }
+
+    public function getDefaultConstraint(): string
+    {
+        return 'value < 40';
     }
 
     /**
@@ -32,12 +41,7 @@ final class LinesFilesRatio implements MetricInterface
         $linesFileRatio = abs(($totalDiff->added + $totalDiff->removed) / count($mergeRequestDetails->changes));
 
         return new MetricResult(
-            success: $linesFileRatio < 40,
-            expectedValue: '< 40',
             currentValue: (string) $linesFileRatio,
-            description: <<<TXT
-            Ratio entre la somme des lignes modifiées et le nombre de fichiers modifiés
-            TXT
         );
     }
 

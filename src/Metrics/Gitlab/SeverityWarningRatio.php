@@ -9,19 +9,14 @@ use App\Metrics\Severity;
 
 final class SeverityWarningRatio extends SeverityRatio
 {
+    public function getDefaultConstraint(): string
+    {
+        return 'value < 0.5';
+    }
+
     protected function getSeverity(): Severity
     {
         return Severity::SEVERITY_WARNING;
-    }
-
-    protected function getSeverityConstraint(): string
-    {
-        return '< 0.5';
-    }
-
-    protected function isSeverityConstraintSuccessful(float $currentSeverityRatio): bool
-    {
-        return $currentSeverityRatio < 0.5;
     }
 
     public static function getDefaultPriority(): int

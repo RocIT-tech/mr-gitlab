@@ -36,3 +36,8 @@ parameters:
 			message: "#^Parameter \\#3 \\$subject of function preg_replace expects array\\|string, string\\|null given\\.$#"
 			count: 1
 			path: src/Metrics/Category.php
+
+		-
+			message: "#^Parameter \\$success of class App\\\\Metrics\\\\ValidatedMetric constructor expects bool, mixed given\\.$#"
+			count: 1
+			path: src/Metrics/MetricsAggregator.php

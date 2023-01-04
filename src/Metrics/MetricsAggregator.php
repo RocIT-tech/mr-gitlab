@@ -6,11 +6,12 @@ namespace App\Metrics;
 
 use App\Gitlab\Client\MergeRequest\Model\Details;
 use App\Gitlab\Config\Config;
+use Symfony\Component\ExpressionLanguage\ExpressionLanguage;
 
 final class MetricsAggregator
 {
     /**
-     * @param MetricInterface[] $metrics
+     * @param MetricCalculatorInterface[] $metrics
      */
     public function __construct(
         private readonly iterable $metrics,
@@ -19,7 +20,7 @@ final class MetricsAggregator
     }
 
     /**
-     * @return iterable<string, MetricResult>
+     * @return iterable<string, ValidatedMetric>
      */
     public function getResult(Details $mergeRequestDetails): iterable
     {
@@ -30,7 +31,19 @@ final class MetricsAggregator
                 continue;
             }
 
-            yield $metric->name() => $metric->result($mergeRequestDetails);
+            $metricName   = $metric->name();
+            $constraint   = $config->getConstraint($metricName) ?? $metric->getDefaultConstraint();
+            $metricResult = $metric->result($mergeRequestDetails);
+
+            $validator = new ExpressionLanguage();
+
+            yield $metricName => new ValidatedMetric(
+                name: $metricName,
+                description: $metric->description(),
+                constraint: $constraint,
+                currentValue: $metricResult,
+                success: $validator->evaluate($constraint, ['value' => $metricResult->currentValue])
+            );
         }
     }
 }

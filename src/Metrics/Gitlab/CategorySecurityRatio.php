@@ -9,19 +9,14 @@ use App\Metrics\Category;
 
 final class CategorySecurityRatio extends CategoryRatio
 {
+    public function getDefaultConstraint(): string
+    {
+        return 'value == 0';
+    }
+
     protected function getCategory(): Category
     {
         return Category::CATEGORY_SECURITY;
-    }
-
-    protected function getCategoryConstraint(): string
-    {
-        return '== 0';
-    }
-
-    protected function isCategoryConstraintSuccessful(float $currentCategoryRatio): bool
-    {
-        return 0.0 === $currentCategoryRatio;
     }
 
     public static function getDefaultPriority(): int

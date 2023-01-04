@@ -18,4 +18,9 @@ final class ConfigItem
     {
         return $this->configMetrics->isMetricDisabled($name);
     }
+
+    public function getConstraint(string $name): ?string
+    {
+        return $this->configMetrics->getConstraint($name);
+    }
 }

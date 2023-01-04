@@ -9,19 +9,14 @@ use App\Metrics\Category;
 
 final class CategoryReadabilityRatio extends CategoryRatio
 {
+    public function getDefaultConstraint(): string
+    {
+        return 'value < 1';
+    }
+
     protected function getCategory(): Category
     {
         return Category::CATEGORY_READABILITY;
-    }
-
-    protected function getCategoryConstraint(): string
-    {
-        return '< 1';
-    }
-
-    protected function isCategoryConstraintSuccessful(float $currentCategoryRatio): bool
-    {
-        return $currentCategoryRatio < 1.0;
     }
 
     public static function getDefaultPriority(): int

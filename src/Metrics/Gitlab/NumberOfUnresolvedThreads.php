@@ -5,14 +5,14 @@ declare(strict_types=1);
 namespace App\Metrics\Gitlab;
 
 use App\Gitlab\Client\MergeRequest\Model\Details;
-use App\Metrics\MetricInterface;
+use App\Metrics\MetricCalculatorInterface;
 use App\Metrics\MetricResult;
 use App\Metrics\StatsAggregator;
 
-final class NumberOfUnresolvedThreads implements MetricInterface
+final class NumberOfUnresolvedThreads implements MetricCalculatorInterface
 {
     public function __construct(
-        private readonly StatsAggregator $statsAggregator
+        private readonly StatsAggregator $statsAggregator,
     ) {
     }
 
@@ -21,17 +21,22 @@ final class NumberOfUnresolvedThreads implements MetricInterface
         return 'Number of unresolved threads';
     }
 
+    public function description(): string
+    {
+        return 'Nombre de Threads non \'resolved\'.';
+    }
+
+    public function getDefaultConstraint(): string
+    {
+        return 'value == 0';
+    }
+
     public function result(Details $mergeRequestDetails): MetricResult
     {
         $stats = $this->statsAggregator->getResult($mergeRequestDetails);
 
         return new MetricResult(
-            success: 0 === $stats->countUnresolvedThreads,
-            expectedValue: '== 0',
             currentValue: (string) $stats->countUnresolvedThreads,
-            description: <<<TXT
-            Nombre de Threads non 'resolved'.
-            TXT
         );
     }
 }
