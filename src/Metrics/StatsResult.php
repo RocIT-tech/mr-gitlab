@@ -18,7 +18,7 @@ final class StatsResult
     public int $countCategoryQuality = 0;
     public int $countCategoryStability = 0;
 
-    public int $maxCommentsOnThread = 1;
+    public int $maxCommentsOnThread = 0;
 
     public int $numberOfReplies = 0;
     public int $numberOfThreads = 0;

@@ -51,7 +51,7 @@ final class NotesTest extends TestCase
         $notes = NotesFixture::default();
 
         $note = $notes->first();
-        $this->assertSame('This is a note.', $note->body);
+        $this->assertSame('[suggestion][typo, quality]This is a note.', $note->body);
     }
 
     /**
