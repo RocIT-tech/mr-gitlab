@@ -9,6 +9,7 @@ use App\Metrics\Category;
 use App\Metrics\Severity;
 use App\Tests\Gitlab\Client\MergeRequest\Model\Thread\NoteFixture;
 use App\Tests\Gitlab\Client\MergeRequest\Model\Thread\NotesFixture;
+use function is_array;
 use function is_int;
 
 final class ThreadFixture
@@ -41,11 +42,14 @@ final class ThreadFixture
         return $thread;
     }
 
-    public static function with(Thread\Notes $notes): Thread
+    /**
+     * @param Thread\Notes|array<int, Thread\Note>|null $notes
+     */
+    public static function with(Thread\Notes|array|null $notes = null): Thread
     {
         $thread        = new Thread();
         $thread->id    = '#thread-id#';
-        $thread->notes = $notes;
+        $thread->notes = is_array($notes) ? NotesFixture::with($notes) : ($notes ?? NotesFixture::default(5));
 
         return $thread;
     }

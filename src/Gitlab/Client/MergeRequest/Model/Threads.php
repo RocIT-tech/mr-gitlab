@@ -27,7 +27,7 @@ final class Threads implements IteratorAggregate, Countable
     public function __construct(array $threads)
     {
         $this->threads = array_filter($threads, static function (Thread $thread): bool {
-            return $thread->isUserThread() === true && $thread->notes->isEmpty() === false;
+            return $thread->notes->isEmpty() === false;
         });
     }
 

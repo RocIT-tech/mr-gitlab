@@ -22,11 +22,10 @@ final class NoteNormalizer implements DenormalizerInterface, DenormalizerAwareIn
     {
         return new Note(
             id: $data['id'],
-            type: NoteType::from($data['type']),
+            type: null === $data['type'] ? NoteType::TYPE_INDIVIDUAL_NOTE : NoteType::from($data['type']),
             body: $data['body'],
             position: $this->denormalizer->denormalize($data['position'], NotePosition::class, $format, $context),
-            resolved: $data['resolved'] ?? false,
-            system: $data['system']
+            resolved: true === $data['resolvable'] ? ($data['resolved'] ?? false) : true,
         );
     }
 

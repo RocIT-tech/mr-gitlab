@@ -19,7 +19,6 @@ final class NoteFixture
     public static function default(
         ?string $note = null,
         bool    $resolved = false,
-        bool    $system = false,
     ): Note {
         return new Note(
             id: random_int(0, 1_000_000),
@@ -33,7 +32,6 @@ final class NoteFixture
             ),
             position: new NotePosition('/some/file'),
             resolved: $resolved,
-            system: $system,
         );
     }
 

@@ -47,6 +47,16 @@ final class DiffNormalizerTest extends TestCase
                     DIFF,
             'expected' => new Diff(-7, 0),
         ];
+
+        yield 'empty' => [
+            'data' => '',
+            'expected' => new Diff(0, 0),
+        ];
+
+        yield 'new line only' => [
+            'data' => '\n',
+            'expected' => new Diff(0, 0),
+        ];
     }
 
     /**
@@ -61,5 +71,17 @@ final class DiffNormalizerTest extends TestCase
         $result = $diffNormalizer->denormalize($data, Diff::class);
 
         $this->assertEquals($expected, $result);
+    }
+
+    /**
+     * @covers ::supportsDenormalization()
+     */
+    public function testSupportsOnlyDiffObjectInDiffFormat(): void
+    {
+        $diffNormalizer = new DiffNormalizer();
+
+        $this->assertTrue($diffNormalizer->supportsDenormalization('fake data', Diff::class, DiffNormalizer::FORMAT));
+        $this->assertFalse($diffNormalizer->supportsDenormalization('fake data', Diff::class));
+        $this->assertFalse($diffNormalizer->supportsDenormalization('fake data', 'som\other\class', DiffNormalizer::FORMAT));
     }
 }

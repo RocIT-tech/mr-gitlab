@@ -29,6 +29,10 @@ final class ThreadsFixture
             $resolved = true === $resolved ? $numberOfThreads : 0;
         }
 
+        if ($resolved > $numberOfThreads) {
+            $resolved = $numberOfThreads;
+        }
+
         $threads = [];
         for ($i = 0; $i < $numberOfThreads; $i++) {
             $threads[] = ThreadFixture::default(
@@ -45,6 +49,10 @@ final class ThreadsFixture
     {
         if (is_int($resolved) === false) {
             $resolved = true === $resolved ? $numberOfThreads : 0;
+        }
+
+        if ($resolved > $numberOfThreads) {
+            $resolved = $numberOfThreads;
         }
 
         $threads = [];
@@ -68,13 +76,15 @@ final class ThreadsFixture
             }
 
             $categoryCases = array_filter(Category::cases(), static fn(Category $category): bool => $category !== Category::CATEGORY_NONE);
-            $note = sprintf(
+            $note          = sprintf(
                 '[%s][%s] This is a note.',
                 strtolower($severity->value),
                 implode(', ', array_map(static fn(Category $category): string => strtolower($category->value), $categoryCases)),
             );
 
-            $threads[] = ThreadFixture::with(NotesFixture::with([NoteFixture::default(note: $note)]));
+            $threads[] = ThreadFixture::with(
+                notes: [NoteFixture::default(note: $note)],
+            );
         }
 
         return new Threads($threads);

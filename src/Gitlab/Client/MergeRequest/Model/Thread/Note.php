@@ -12,7 +12,6 @@ final class Note
         public readonly string       $body,
         public readonly NotePosition $position,
         public readonly bool         $resolved = false,
-        public readonly bool         $system = true,
     ) {
     }
 }

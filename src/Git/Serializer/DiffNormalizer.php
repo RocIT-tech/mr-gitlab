@@ -11,6 +11,7 @@ use function array_pop;
 use function count;
 use function preg_match;
 use function preg_split;
+use const PREG_SPLIT_NO_EMPTY;
 
 final class DiffNormalizer implements DenormalizerInterface
 {
@@ -41,7 +42,7 @@ final class DiffNormalizer implements DenormalizerInterface
      */
     private function parse(string $string): array
     {
-        $lines = preg_split('(\r\n|\r|\n)', $string);
+        $lines = preg_split('(\r\n|\r|\n)', $string, 0, PREG_SPLIT_NO_EMPTY);
 
         if (false === $lines) {
             throw new Exception('Something went wrong.');
