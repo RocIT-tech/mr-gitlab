@@ -5,18 +5,18 @@ declare(strict_types=1);
 namespace App\Metrics\Gitlab;
 
 use App\Gitlab\Client\MergeRequest\Model\Details;
-use App\Metrics\Category;
+use App\Metrics\Metric;
 
 final class CategoryReadabilityRatio extends CategoryRatio
 {
+    public static function supportedMetric(): string
+    {
+        return Metric::ReadabilityRatio->value;
+    }
+
     public function getDefaultConstraint(): string
     {
         return 'value < 1';
-    }
-
-    protected function getCategory(): Category
-    {
-        return Category::CATEGORY_READABILITY;
     }
 
     public static function getDefaultPriority(): int

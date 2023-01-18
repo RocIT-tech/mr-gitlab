@@ -5,19 +5,15 @@ declare(strict_types=1);
 namespace App\Metrics\Gitlab;
 
 use App\Gitlab\Client\MergeRequest\Model\Details;
+use App\Metrics\Metric;
 use App\Metrics\MetricCalculatorInterface;
 use App\Metrics\MetricResult;
 
 final class LinesAdded implements MetricCalculatorInterface
 {
-    public function name(): string
+    public static function supportedMetric(): string
     {
-        return 'Lines Added';
-    }
-
-    public function description(): string
-    {
-        return 'Nombre de lignes ajoutées';
+        return Metric::LinesAdded->value;
     }
 
     public function getDefaultConstraint(): string

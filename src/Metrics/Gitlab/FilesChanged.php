@@ -5,20 +5,16 @@ declare(strict_types=1);
 namespace App\Metrics\Gitlab;
 
 use App\Gitlab\Client\MergeRequest\Model\Details;
+use App\Metrics\Metric;
 use App\Metrics\MetricCalculatorInterface;
 use App\Metrics\MetricResult;
 use function count;
 
 final class FilesChanged implements MetricCalculatorInterface
 {
-    public function name(): string
+    public static function supportedMetric(): string
     {
-        return 'Files Changed';
-    }
-
-    public function description(): string
-    {
-        return 'Nombre de fichiers changés';
+        return Metric::FilesChanged->value;
     }
 
     public function getDefaultConstraint(): string

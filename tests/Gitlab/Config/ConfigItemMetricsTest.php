@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace App\Tests\Gitlab\Config;
 
 use App\Gitlab\Config\ConfigItemMetrics;
+use App\Metrics\Metric;
 use Generator;
+use LogicException;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -132,114 +134,52 @@ final class ConfigItemMetricsTest extends TestCase
 
     public function generateAlteredConfigs(): Generator
     {
+        $defaultHasConstraint = [
+            Metric::NumberOfThreads->value           => false,
+            Metric::ThreadsFilesRatio->value         => false,
+            Metric::LinesFilesRatio->value           => false,
+            Metric::FilesChanged->value              => false,
+            Metric::LinesAdded->value                => false,
+            Metric::LinesRemoved->value              => false,
+            Metric::RepliesPerThreadRatio->value     => false,
+            Metric::AlertRatio->value                => false,
+            Metric::WarningRatio->value              => false,
+            Metric::ReadabilityRatio->value          => false,
+            Metric::SecurityRatio->value             => false,
+            Metric::NumberOfUnresolvedThreads->value => false,
+        ];
+
         yield 'empty' => [
-            'config'      => [],
-            'hasConstraints' => [
-                'Number of Threads'            => false,
-                'Thread / Files Ratio'         => false,
-                'Lines / Files Ratio'          => false,
-                'Files Changed'                => false,
-                'Lines Added'                  => false,
-                'Lines Removed'                => false,
-                'Replies per Thread Ratio'     => false,
-                'Alert Ratio'                  => false,
-                'Warning Ratio'                => false,
-                'Readability Ratio'            => false,
-                'Security Ratio'               => false,
-                'Number of unresolved threads' => false,
-            ],
-            'getConstraints' => [
-                'Number of Threads'            => null,
-                'Thread / Files Ratio'         => null,
-                'Lines / Files Ratio'          => null,
-                'Files Changed'                => null,
-                'Lines Added'                  => null,
-                'Lines Removed'                => null,
-                'Replies per Thread Ratio'     => null,
-                'Alert Ratio'                  => null,
-                'Warning Ratio'                => null,
-                'Readability Ratio'            => null,
-                'Security Ratio'               => null,
-                'Number of unresolved threads' => null,
-            ],
+            'config'         => [],
+            'hasConstraints' => $defaultHasConstraint,
         ];
 
         yield 'alert & warning ratio disabled' => [
-            'config'      => [
-                'Alert Ratio'   => [
+            'config'         => [
+                Metric::AlertRatio->value   => [
                     'enabled' => false,
                 ],
-                'Warning Ratio' => [
+                Metric::WarningRatio->value => [
                     'enabled' => false,
                 ],
             ],
-            'hasConstraints' => [
-                'Number of Threads'            => false,
-                'Thread / Files Ratio'         => false,
-                'Lines / Files Ratio'          => false,
-                'Files Changed'                => false,
-                'Lines Added'                  => false,
-                'Lines Removed'                => false,
-                'Replies per Thread Ratio'     => false,
-                'Alert Ratio'                  => false,
-                'Warning Ratio'                => false,
-                'Readability Ratio'            => false,
-                'Security Ratio'               => false,
-                'Number of unresolved threads' => false,
-            ],
-            'getConstraints' => [
-                'Number of Threads'            => null,
-                'Thread / Files Ratio'         => null,
-                'Lines / Files Ratio'          => null,
-                'Files Changed'                => null,
-                'Lines Added'                  => null,
-                'Lines Removed'                => null,
-                'Replies per Thread Ratio'     => null,
-                'Alert Ratio'                  => null,
-                'Warning Ratio'                => null,
-                'Readability Ratio'            => null,
-                'Security Ratio'               => null,
-                'Number of unresolved threads' => null,
-            ],
+            'hasConstraints' => $defaultHasConstraint,
         ];
 
+        $constraint = 'value < 1000';
         yield 'altered constraint for lines addition & removal' => [
-            'config'          => [
-                'Lines Added'   => [
-                    'constraint' => 'value < 1000',
+            'config'         => [
+                Metric::LinesAdded->value   => [
+                    'constraint' => $constraint,
                 ],
-                'Lines Removed' => [
-                    'constraint' => 'value < 1000',
+                Metric::LinesRemoved->value => [
+                    'constraint' => $constraint,
                 ],
             ],
             'hasConstraints' => [
-                'Number of Threads'            => false,
-                'Thread / Files Ratio'         => false,
-                'Lines / Files Ratio'          => false,
-                'Files Changed'                => false,
-                'Lines Added'                  => true,
-                'Lines Removed'                => true,
-                'Replies per Thread Ratio'     => false,
-                'Alert Ratio'                  => false,
-                'Warning Ratio'                => false,
-                'Readability Ratio'            => false,
-                'Security Ratio'               => false,
-                'Number of unresolved threads' => false,
-            ],
-            'getConstraints' => [
-                'Number of Threads'            => null,
-                'Thread / Files Ratio'         => null,
-                'Lines / Files Ratio'          => null,
-                'Files Changed'                => null,
-                'Lines Added'                  => 'value < 1000',
-                'Lines Removed'                => 'value < 1000',
-                'Replies per Thread Ratio'     => null,
-                'Alert Ratio'                  => null,
-                'Warning Ratio'                => null,
-                'Readability Ratio'            => null,
-                'Security Ratio'               => null,
-                'Number of unresolved threads' => null,
-            ],
+                                    Metric::LinesAdded->value   => true,
+                                    Metric::LinesRemoved->value => true,
+                                ] + $defaultHasConstraint,
         ];
     }
 
@@ -251,19 +191,20 @@ final class ConfigItemMetricsTest extends TestCase
      * @covers ::getConstraint()
      *
      * @param array<string, array{enabled?: bool, constraint?: string}> $config
-     * @param array<string, bool> $hasConstraints
-     * @param array<string, string|null> $getConstraints
+     * @param array<string, bool>                                       $hasConstraints
      */
-    public function testConstraintIsSet(array $config, array $hasConstraints, array $getConstraints): void
+    public function testConstraintIsSet(array $config, array $hasConstraints): void
     {
         $configItemMetrics = new ConfigItemMetrics($config);
 
-        foreach ($hasConstraints as $hasConstraintName => $hasConstraint){
+        foreach ($hasConstraints as $hasConstraintName => $hasConstraint) {
             $this->assertSame($hasConstraint, $configItemMetrics->hasConstraint($hasConstraintName));
-        }
-
-        foreach ($getConstraints as $getConstraintName => $getConstraint){
-            $this->assertSame($getConstraint, $configItemMetrics->getConstraint($getConstraintName));
+            if (true === $hasConstraint) {
+                $this->assertSame('value < 1000', $configItemMetrics->getConstraint($hasConstraintName));
+            } else {
+                $this->expectException(LogicException::class);
+                $configItemMetrics->getConstraint($hasConstraintName);
+            }
         }
     }
 }

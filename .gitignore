@@ -11,6 +11,7 @@
 ###< symfony/framework-bundle ###
 
 ###> phpunit/phpunit ###
+/coverage
 /.phpunit.cache
 ###< phpunit/phpunit ###
 

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Gitlab\Config;
 
+use LogicException;
 use function array_key_exists;
 
 final class ConfigItemMetrics
@@ -43,10 +44,10 @@ final class ConfigItemMetrics
         return array_key_exists($name, $this->constraints);
     }
 
-    public function getConstraint(string $name): ?string
+    public function getConstraint(string $name): string
     {
         if ($this->hasConstraint($name) === false) {
-            return null;
+            throw new LogicException("Disabled or not found \"{$name}\" constraint.");
         }
 
         return $this->constraints[$name];

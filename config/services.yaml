@@ -17,4 +17,4 @@ services:
 
     App\Metrics\MetricsAggregator:
         arguments:
-            $metrics: !tagged_iterator { tag: 'metrics.gitlab' }
+            $metrics: !tagged_locator { tag: 'metrics.gitlab', default_index_method: 'supportedMetric' }

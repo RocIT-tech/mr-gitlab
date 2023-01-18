@@ -5,18 +5,18 @@ declare(strict_types=1);
 namespace App\Metrics\Gitlab;
 
 use App\Gitlab\Client\MergeRequest\Model\Details;
-use App\Metrics\Severity;
+use App\Metrics\Metric;
 
 final class SeverityAlertRatio extends SeverityRatio
 {
+    public static function supportedMetric(): string
+    {
+        return Metric::AlertRatio->value;
+    }
+
     public function getDefaultConstraint(): string
     {
         return 'value == 0';
-    }
-
-    protected function getSeverity(): Severity
-    {
-        return Severity::SEVERITY_ALERT;
     }
 
     public static function getDefaultPriority(): int

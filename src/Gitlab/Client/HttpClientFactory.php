@@ -16,7 +16,7 @@ final class HttpClientFactory
     use HttpClientTrait;
 
     public function __construct(
-        private readonly Config $config
+        private readonly Config $config,
     ) {
     }
 
@@ -25,10 +25,10 @@ final class HttpClientFactory
         $defaultOptionsByRegexp = [];
 
         foreach ($this->config->all() as $host => $config) {
-            $regexp = preg_quote(implode('', self::resolveUrl(self::parseUrl('.'), self::parseUrl($config->host))), null);
+            $regexp = preg_quote(implode('', self::resolveUrl(self::parseUrl('.'), self::parseUrl($host))), null);
 
             $defaultOptionsByRegexp[$regexp] = [
-                'base_uri' => $config->host,
+                'base_uri' => $host,
                 'headers'  => [
                     'PRIVATE-TOKEN' => $config->token,
                 ],

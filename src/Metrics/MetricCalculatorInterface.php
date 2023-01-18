@@ -8,9 +8,7 @@ use App\Gitlab\Client\MergeRequest\Model\Details;
 
 interface MetricCalculatorInterface
 {
-    public function name(): string;
-
-    public function description(): string;
+    public static function supportedMetric(): string;
 
     public function getDefaultConstraint(): string;
 

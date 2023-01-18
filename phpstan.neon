@@ -3,6 +3,8 @@ includes:
     - './phpstan-ignore.neon'
 
 parameters:
+    stubFiles:
+        - ./.phpstan/stubs/Symfony/Component/DependencyInjection/ServiceLocator.stub
     level: 'max'
     paths:
         - 'src'

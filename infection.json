@@ -16,6 +16,6 @@
     "bootstrap": "./tests/bootstrap.php",
     "testFrameworkOptions": "--group=unit",
     "logs": {
-        "html": "./.infection/mutation-report.html"
+        "html": "./coverage/infection/mutation-report.html"
     }
 }

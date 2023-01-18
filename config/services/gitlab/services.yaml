@@ -31,6 +31,7 @@ services:
     App\Gitlab\Config\FilesystemLoader:
         arguments:
             $configDirectory: '%kernel.project_dir%/user-config'
+            $metrics: !tagged_locator { tag: 'metrics.gitlab', default_index_method: 'supportedMetric' }
 
     App\Gitlab\Config\Config:
         class: 'App\Gitlab\Config\Config'

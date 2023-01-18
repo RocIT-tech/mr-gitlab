@@ -6,43 +6,53 @@ namespace App\Metrics;
 
 use App\Gitlab\Client\MergeRequest\Model\Details;
 use App\Gitlab\Config\Config;
+use Symfony\Component\DependencyInjection\ServiceLocator;
 use Symfony\Component\ExpressionLanguage\ExpressionLanguage;
 
 final class MetricsAggregator
 {
     /**
-     * @param MetricCalculatorInterface[] $metrics
+     * @param ServiceLocator<MetricCalculatorInterface> $metrics
      */
     public function __construct(
-        private readonly iterable $metrics,
-        private readonly Config   $config,
+        private readonly StatsAggregator $statsAggregator,
+        private readonly ServiceLocator  $metrics,
+        private readonly Config          $config,
     ) {
+    }
+
+    public function getResult(Details $mergeRequestDetails): ValidatedMetrics
+    {
+        return new ValidatedMetrics(
+            $this->statsAggregator->getResult($mergeRequestDetails),
+            $this->getResultIterator($mergeRequestDetails)
+        );
     }
 
     /**
      * @return iterable<string, ValidatedMetric>
      */
-    public function getResult(Details $mergeRequestDetails): iterable
+    private function getResultIterator(Details $mergeRequestDetails): iterable
     {
         $config = $this->config->getByHost($mergeRequestDetails->web_url);
 
-        foreach ($this->metrics as $metric) {
+        $validator = new ExpressionLanguage();
+
+        foreach (Metric::cases() as $metric) {
             if ($config->isMetricDisabled($metric->name())) {
                 continue;
             }
 
-            $metricName   = $metric->name();
-            $constraint   = $config->getConstraint($metricName) ?? $metric->getDefaultConstraint();
-            $metricResult = $metric->result($mergeRequestDetails);
+            /** @var MetricCalculatorInterface $metricCalculator */
+            $metricCalculator = $this->metrics->get($metric->value);
+            $constraint       = $config->getConstraint($metric->value);
+            $metricResult     = $metricCalculator->result($mergeRequestDetails);
 
-            $validator = new ExpressionLanguage();
-
-            yield $metricName => new ValidatedMetric(
-                name: $metricName,
-                description: $metric->description(),
+            yield $metric->name() => ValidatedMetric::forMetric(
+                metric: $metric,
                 constraint: $constraint,
                 currentValue: $metricResult,
-                success: $validator->evaluate($constraint, ['value' => $metricResult->currentValue])
+                success: $validator->evaluate($constraint, ['value' => $metricResult->currentValue]),
             );
         }
     }

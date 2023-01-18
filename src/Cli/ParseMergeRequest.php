@@ -7,10 +7,7 @@ namespace App\Cli;
 use App\Gitlab\Client\MergeRequest\Model\Details;
 use App\Gitlab\Client\MergeRequest\Query\GetDetailsQuery;
 use App\Gitlab\Parser\MergeRequestUrl;
-use App\Metrics\MetricResult;
 use App\Metrics\MetricsAggregator;
-use App\Metrics\StatsAggregator;
-use App\Metrics\ValidatedMetric;
 use Spatie\Emoji\Emoji;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
@@ -21,6 +18,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Messenger\HandleTrait;
 use Symfony\Component\Messenger\MessageBusInterface;
+use function count;
 
 #[AsCommand(
     name: 'gitlab:merge-request:parse',
@@ -32,16 +30,12 @@ final class ParseMergeRequest extends Command
 
     private readonly MetricsAggregator $metricsAggregator;
 
-    private readonly StatsAggregator $statsAggregator;
-
     public function __construct(
         MessageBusInterface $queryBus,
         MetricsAggregator   $metricsAggregator,
-        StatsAggregator     $statsAggregator,
     ) {
         $this->messageBus        = $queryBus;
         $this->metricsAggregator = $metricsAggregator;
-        $this->statsAggregator   = $statsAggregator;
 
         parent::__construct();
     }
@@ -54,7 +48,7 @@ final class ParseMergeRequest extends Command
             The <info>%command.name%</info> command parses the given merge request url for metrics:
 
             <info>php %command.full_name% https://{gitlab.url}/{group/project}/-/merge_requests/{id}</info>
-            TXT
+            TXT,
             );
     }
 
@@ -75,20 +69,11 @@ final class ParseMergeRequest extends Command
 
         $io->title($mergeRequestDetails->web_url);
 
-        /** @var iterable<string, ValidatedMetric> $metricResults */
         $metricResults = $this->metricsAggregator->getResult($mergeRequestDetails);
-
-        $countSuccess = 0;
-        $countTotal   = 0;
 
         $rows = [];
 
         foreach ($metricResults as $metricName => $metricResult) {
-            $countTotal++;
-            if (true === $metricResult->success) {
-                $countSuccess++;
-            }
-
             $rows[] = [
                 $metricName,
                 $metricResult->description,
@@ -99,26 +84,27 @@ final class ParseMergeRequest extends Command
         }
         $io->table(['Name', 'Description', 'Expected', 'Calculated', 'Result'], $rows);
 
-        $stats = $this->statsAggregator->getResult($mergeRequestDetails);
         $io->definitionList(
-            ['Number of Alerts' => $stats->countSeverityAlert],
-            ['Number of Warning' => $stats->countSeverityWarning],
-            ['Number of Suggestion' => $stats->countSeveritySuggestion],
+            ['Number of Alerts' => $metricResults->stats->countSeverityAlert],
+            ['Number of Warning' => $metricResults->stats->countSeverityWarning],
+            ['Number of Suggestion' => $metricResults->stats->countSeveritySuggestion],
             new TableSeparator(),
-            ['Number of Security' => $stats->countCategorySecurity],
-            ['Number of Performance' => $stats->countCategoryPerformance],
-            ['Number of Readability' => $stats->countCategoryReadability],
-            ['Number of Typo' => $stats->countCategoryTypo],
-            ['Number of Maintainability' => $stats->countCategoryMaintainability],
-            ['Number of Quality' => $stats->countCategoryQuality],
-            ['Number of Stability' => $stats->countCategoryStability],
+            ['Number of Security' => $metricResults->stats->countCategorySecurity],
+            ['Number of Performance' => $metricResults->stats->countCategoryPerformance],
+            ['Number of Readability' => $metricResults->stats->countCategoryReadability],
+            ['Number of Typo' => $metricResults->stats->countCategoryTypo],
+            ['Number of Maintainability' => $metricResults->stats->countCategoryMaintainability],
+            ['Number of Quality' => $metricResults->stats->countCategoryQuality],
+            ['Number of Stability' => $metricResults->stats->countCategoryStability],
             new TableSeparator(),
-            ['Number of replies' => $stats->numberOfReplies],
-            ['Number of threads' => $stats->numberOfThreads],
-            ['Max comments on a single thread' => $stats->maxCommentsOnThread],
-            ['Unresolved threads' => $stats->countUnresolvedThreads],
+            ['Number of replies' => $metricResults->stats->numberOfReplies],
+            ['Number of threads' => $metricResults->stats->numberOfThreads],
+            ['Max comments on a single thread' => $metricResults->stats->maxCommentsOnThread],
+            ['Unresolved threads' => $metricResults->stats->countUnresolvedThreads],
         );
 
+        $countTotal        = count($metricResults);
+        $countSuccess      = $metricResults->countSuccess();
         $conclusionMessage = "{$countSuccess} / {$countTotal} have succeeded.";
 
         if ($countSuccess === $countTotal) {

@@ -5,20 +5,16 @@ declare(strict_types=1);
 namespace App\Metrics\Gitlab;
 
 use App\Gitlab\Client\MergeRequest\Model\Details;
+use App\Metrics\Metric;
 use App\Metrics\MetricCalculatorInterface;
 use App\Metrics\MetricResult;
 use function abs;
 
 final class LinesRemoved implements MetricCalculatorInterface
 {
-    public function name(): string
+    public static function supportedMetric(): string
     {
-        return 'Lines Removed';
-    }
-
-    public function description(): string
-    {
-        return 'Nombre de lignes supprimées';
+        return Metric::LinesRemoved->value;
     }
 
     public function getDefaultConstraint(): string

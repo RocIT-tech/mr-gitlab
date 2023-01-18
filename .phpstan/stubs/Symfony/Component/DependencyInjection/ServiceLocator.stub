@@ -1,0 +1,14 @@
+<?php
+
+namespace Symfony\Component\DependencyInjection;
+
+/**
+ * @template T of mixed
+ */
+class ServiceLocator
+{
+    /**
+     * @return T
+     */
+    public function get(string $id): mixed;
+}

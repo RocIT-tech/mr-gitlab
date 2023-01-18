@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Metrics\Gitlab;
 
 use App\Gitlab\Client\MergeRequest\Model\Details;
+use App\Metrics\Metric;
 use App\Metrics\MetricCalculatorInterface;
 use App\Metrics\MetricResult;
 use LogicException;
@@ -13,14 +14,9 @@ use function count;
 
 final class LinesFilesRatio implements MetricCalculatorInterface
 {
-    public function name(): string
+    public static function supportedMetric(): string
     {
-        return 'Lines / Files Ratio';
-    }
-
-    public function description(): string
-    {
-        return 'Ratio entre la somme des lignes modifiées et le nombre de fichiers modifiés';
+        return Metric::LinesFilesRatio->value;
     }
 
     public function getDefaultConstraint(): string

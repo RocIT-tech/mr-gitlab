@@ -15,7 +15,6 @@ use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 use Symfony\Contracts\HttpClient\ResponseInterface;
 use function array_merge;
-use function dd;
 use function sprintf;
 
 final class GetDetailsQueryHandler

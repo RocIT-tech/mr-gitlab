@@ -5,12 +5,9 @@ declare(strict_types=1);
 namespace App\Metrics\Gitlab;
 
 use App\Gitlab\Client\MergeRequest\Model\Details;
-use App\Metrics\Category;
 use App\Metrics\MetricCalculatorInterface;
 use App\Metrics\MetricResult;
 use App\Metrics\StatsAggregator;
-use function strtolower;
-use function ucfirst;
 
 abstract class CategoryRatio implements MetricCalculatorInterface
 {
@@ -19,21 +16,7 @@ abstract class CategoryRatio implements MetricCalculatorInterface
     ) {
     }
 
-    abstract protected function getCategory(): Category;
-
     abstract protected function getCategoryValue(Details $mergeRequestDetails): float;
-
-    public function name(): string
-    {
-        $category = ucfirst(strtolower($this->getCategory()->value));
-
-        return "{$category} Ratio";
-    }
-
-    public function description(): string
-    {
-        return "Nombre de threads de catégorie \"{$this->getCategory()->value}\" / Nombre de threads";
-    }
 
     public function result(Details $mergeRequestDetails): MetricResult
     {
