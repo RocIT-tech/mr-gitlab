@@ -1,0 +1,10 @@
+framework:
+    http_client:
+        default_options:
+            headers:
+                'User-Agent': 'Mr-Gitlab; version=x.y.z;'
+        scoped_clients:
+            gitlab.client:
+                base_uri: 'https://gitlab.com'
+                headers:
+                    Mr-Gitlab-Client: 'gitlab'

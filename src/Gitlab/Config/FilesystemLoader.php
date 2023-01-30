@@ -11,6 +11,7 @@ use Symfony\Component\DependencyInjection\ServiceLocator;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\ExpressionSyntax;
+use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\Sequentially;
 use Symfony\Component\Validator\Constraints\Type;
 use Symfony\Component\Validator\Validation;
@@ -57,7 +58,8 @@ final class FilesystemLoader
                                 ),
                             ]),
                         ));
-                });
+                })
+            ;
         }
 
         foreach ($configurationFiles as $configurationFile) {

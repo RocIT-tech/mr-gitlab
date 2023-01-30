@@ -10,6 +10,7 @@ use App\Gitlab\Client\MergeRequest\Model\Details;
 use App\Gitlab\Client\MergeRequest\Model\Thread;
 use App\Gitlab\Client\MergeRequest\Model\Threads;
 use App\Gitlab\Client\MergeRequest\Query\GetDetailsQuery;
+use App\Gitlab\Config\ConfigContext;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
@@ -20,14 +21,17 @@ use function sprintf;
 final class GetDetailsQueryHandler
 {
     public function __construct(
-        private readonly HttpClientInterface $httpClient,
+        private readonly ConfigContext $configContext,
+        private readonly HttpClientInterface $gitlabClient,
         private readonly SerializerInterface $serializer,
     ) {
     }
 
     public function __invoke(GetDetailsQuery $getDetailsQuery): Details
     {
-        $getDetailsRequest  = $this->httpClient->request('GET', $getDetailsQuery->getDetailsUrl());
+        $this->configContext->withHost($getDetailsQuery->getHost());
+
+        $getDetailsRequest  = $this->gitlabClient->request('GET', $getDetailsQuery->getDetailsUrl());
         $getChangesRequests = $this->getChanges($getDetailsQuery);
         $getThreadsRequests = $this->getThreads($getDetailsQuery);
 
@@ -71,7 +75,7 @@ final class GetDetailsQueryHandler
         $page               = '1';
 
         do {
-            $getThreadsCurrentRequest = $this->httpClient->request('GET', $getDetailsQuery->getThreadsUrl(), [
+            $getThreadsCurrentRequest = $this->gitlabClient->request('GET', $getDetailsQuery->getThreadsUrl(), [
                 'query' => [
                     'page' => $page,
                 ],
@@ -96,7 +100,7 @@ final class GetDetailsQueryHandler
         $page               = '1';
 
         do {
-            $getChangesCurrentRequest = $this->httpClient->request('GET', $getDetailsQuery->getChangesUrl(), [
+            $getChangesCurrentRequest = $this->gitlabClient->request('GET', $getDetailsQuery->getChangesUrl(), [
                 'query' => [
                     'page' => $page,
                 ],

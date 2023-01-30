@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Gitlab\Client\MergeRequest\Query;
 
+use function parse_url;
 use function urlencode;
 
 final class GetDetailsQuery
@@ -13,6 +14,13 @@ final class GetDetailsQuery
         public readonly string $mergeRequestIid,
         public readonly string $baseUrl,
     ) {
+    }
+
+    public function getHost(): string
+    {
+        $parsedUrl = parse_url($this->baseUrl);
+
+        return "{$parsedUrl['scheme']}://{$parsedUrl['host']}";
     }
 
     public function getBaseUrl(): string

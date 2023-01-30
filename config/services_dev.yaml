@@ -1,0 +1,11 @@
+services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+
+    App\DataFixtures\:
+        resource: '%kernel.project_dir%/src/DataFixtures'
+
+    App\DataFixtures\ConfigFixtures:
+        arguments:
+            $configDirectory: '%kernel.project_dir%/user-config'

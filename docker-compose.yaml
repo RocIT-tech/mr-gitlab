@@ -1,0 +1,20 @@
+services:
+    postgres:
+        image: 'postgres:15'
+        environment:
+            POSTGRES_USER: 'gitlab'
+            POSTGRES_PASSWORD: 'gitlab'
+            POSTGRES_DB: 'gitlab'
+        volumes:
+            -
+                type: 'volume'
+                source: 'pgsql-data'
+                target: '/var/lib/postgresql/data'
+        ports:
+            -
+                published: 5432
+                target: 5432
+                protocol: 'tcp'
+volumes:
+    pgsql-data:
+        driver: 'local'

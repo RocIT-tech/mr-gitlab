@@ -22,8 +22,4 @@ final class Kernel extends BaseKernel
         $container->import('../config/{services}/**/*.yaml');
         $container->import('../config/{services}_' . $this->environment . '.yaml');
     }
-
-    protected function configureRoutes(RoutingConfigurator $routes): void
-    {
-    }
 }

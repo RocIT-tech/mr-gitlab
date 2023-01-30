@@ -8,11 +8,12 @@ services:
     App\Gitlab\Serializer\:
         resource: '%kernel.project_dir%/src/Gitlab/Serializer'
 
-    gitlab.http_client:
+    gitlab.http_client.auto_config:
         class: 'Symfony\Component\HttpClient\ScopingHttpClient'
-        decorates: 'Symfony\Contracts\HttpClient\HttpClientInterface'
+        decorates: 'gitlab.client'
         decoration_inner_name: 'gitlab.http_client.inner'
         factory: ['@App\Gitlab\Client\HttpClientFactory', 'create']
+        lazy: true
         arguments:
             $client: '@gitlab.http_client.inner'
 
@@ -32,6 +33,8 @@ services:
         arguments:
             $configDirectory: '%kernel.project_dir%/user-config'
             $metrics: !tagged_locator { tag: 'metrics.gitlab', default_index_method: 'supportedMetric' }
+
+    App\Gitlab\Config\ConfigContext: ~
 
     App\Gitlab\Config\Config:
         class: 'App\Gitlab\Config\Config'

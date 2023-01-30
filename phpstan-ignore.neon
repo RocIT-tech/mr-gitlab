@@ -1,6 +1,11 @@
 parameters:
 	ignoreErrors:
 		-
+			message: "#^Parameter \\#1 \\$account of method App\\\\Entity\\\\Config\\:\\:attachAccount\\(\\) expects App\\\\Entity\\\\Account\\|null, object given\\.$#"
+			count: 1
+			path: src/DataFixtures/ConfigFixtures.php
+
+		-
 			message: "#^Cannot cast mixed to string\\.$#"
 			count: 1
 			path: src/Cli/ParseMergeRequest.php
