@@ -1,14 +1,19 @@
 parameters:
 	ignoreErrors:
 		-
-			message: "#^Parameter \\#1 \\$account of method App\\\\Entity\\\\Config\\:\\:attachAccount\\(\\) expects App\\\\Entity\\\\Account\\|null, object given\\.$#"
+			message: "#^Parameter \\#1 \\$value of class App\\\\Domain\\\\Tenant\\\\TenantId constructor expects string, mixed given\\.$#"
 			count: 1
-			path: src/DataFixtures/ConfigFixtures.php
+			path: src/Application/Cli/ParseMergeRequest.php
 
 		-
 			message: "#^Cannot cast mixed to string\\.$#"
 			count: 1
-			path: src/Cli/ParseMergeRequest.php
+			path: src/Application/Cli/ParseMergeRequest.php
+
+		-
+			message: "#^Parameter \\#1 \\$account of method App\\\\Infrastructure\\\\Doctrine\\\\Entity\\\\Config\\:\\:attachAccount\\(\\) expects App\\\\Infrastructure\\\\Doctrine\\\\Entity\\\\Account\\|null, object given\\.$#"
+			count: 1
+			path: src/Infrastructure/Doctrine/DataFixtures/ConfigFixtures.php
 
 		-
 			message: "#^Method [^:]+\\:\\:supportsDenormalization\\(\\) has parameter \\$context with no value type specified in iterable type array\\.$#"
@@ -17,9 +22,9 @@ parameters:
 			message: "#^Method [^:]+\\:\\:denormalize\\(\\) has parameter \\$data with no value type specified in iterable type array\\.$#"
 
 		-
-			message: "#^Method App\\\\Gitlab\\\\Client\\\\MergeRequest\\\\Model\\\\Thread\\\\Notes\\:\\:first\\(\\) should return App\\\\Gitlab\\\\Client\\\\MergeRequest\\\\Model\\\\Thread\\\\Note but returns App\\\\Gitlab\\\\Client\\\\MergeRequest\\\\Model\\\\Thread\\\\Note\\|false\\.$#"
+			message: "#^Method App\\\\Infrastructure\\\\Gitlab\\\\Client\\\\MergeRequest\\\\Model\\\\Thread\\\\Notes\\:\\:first\\(\\) should return App\\\\Infrastructure\\\\Gitlab\\\\Client\\\\MergeRequest\\\\Model\\\\Thread\\\\Note but returns App\\\\Infrastructure\\\\Gitlab\\\\Client\\\\MergeRequest\\\\Model\\\\Thread\\\\Note\\|false\\.$#"
 			count: 1
-			path: src/Gitlab/Client/MergeRequest/Model/Thread/Notes.php
+			path: src/Infrastructure/Gitlab/Client/MergeRequest/Model/Thread/Notes.php
 
 		-
 			message: "#^Cannot access offset '[a-zA-Z-_]+' on array\\{scheme\\?\\: string, host\\?\\: string, port\\?\\: int\\<0, 65535\\>, user\\?\\: string, pass\\?\\: string, path\\?\\: string, query\\?\\: string, fragment\\?\\: string\\}\\|false\\.$#"
@@ -30,29 +35,29 @@ parameters:
 		-
 			message: "#^Parameter \\#1 \\$string of function strtolower expects string, string\\|null given\\.$#"
 			count: 1
-			path: src/Metrics/Category.php
+			path: src/Domain/Metrics/Category.php
 
 		-
 			message: "#^Parameter \\#1 \\$string of function trim expects string, string\\|null given\\.$#"
 			count: 1
-			path: src/Metrics/Category.php
+			path: src/Domain/Metrics/Category.php
 
 		-
 			message: "#^Parameter \\#3 \\$subject of function preg_replace expects array\\|string, string\\|null given\\.$#"
 			count: 1
-			path: src/Metrics/Category.php
+			path: src/Domain/Metrics/Category.php
 
 		-
 			message: "#^Call to an undefined method object\\:\\:parse\\(\\)\\.$#"
 			count: 1
-			path: tests/Metrics/Gitlab/Notes/ParseNoteTraitTest.php
+			path: tests/Domain/Metrics/Gitlab/Notes/ParseNoteTraitTest.php
 
 		-
-			message: "#^Method class@anonymous/tests/Metrics/Gitlab/Notes/ParseNoteTraitTest\\.php\\:85\\:\\:parse\\(\\) return type has no value type specified in iterable type array\\.$#"
+			message: "#^Method class@anonymous/tests/Domain/Metrics/Gitlab/Notes/ParseNoteTraitTest\\.php\\:85\\:\\:parse\\(\\) return type has no value type specified in iterable type array\\.$#"
 			count: 1
-			path: tests/Metrics/Gitlab/Notes/ParseNoteTraitTest.php
+			path: tests/Domain/Metrics/Gitlab/Notes/ParseNoteTraitTest.php
 
 		-
-			message: "#^Parameter \\$success of static method App\\\\Metrics\\\\ValidatedMetric\\:\\:forMetric\\(\\) expects bool, mixed given\\.$#"
+			message: "#^Parameter \\$success of static method App\\\\Domain\\\\Metrics\\\\ValidatedMetric\\:\\:forMetric\\(\\) expects bool, mixed given\\.$#"
 			count: 1
-			path: src/Metrics/MetricsAggregator.php
+			path: src/Domain/Metrics/MetricsAggregator.php

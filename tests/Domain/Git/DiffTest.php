@@ -1,0 +1,72 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Tests\Domain\Git;
+
+use App\Domain\Git\Diff;
+use Generator;
+use PHPUnit\Framework\TestCase;
+
+/**
+ * @group unit
+ *
+ * @coversDefaultClass \App\Domain\Git\Diff
+ *
+ * @covers ::__construct
+ */
+final class DiffTest extends TestCase
+{
+    public function generateParseableData(): Generator
+    {
+        yield 'only additions' => [
+            'data'     => <<<DIFF
+                    @@ -0,0 +1,7 @@\n
+                    +# Title\n
+                    +## SubTitle 1\n
+                    +\n
+                    +## SubTitle 2\n
+                    +Some content\n
+                    +\n
+                    +Something else\n
+                    DIFF,
+            'expected' => new Diff(0, 7),
+        ];
+
+        yield 'only removals' => [
+            'data'     => <<<DIFF
+                    @@ -0,0 +1,7 @@\n
+                    -# Title\n
+                    -## SubTitle 1\n
+                    -\n
+                    -## SubTitle 2\n
+                    -Some content\n
+                    -\n
+                    -Something else\n
+                    DIFF,
+            'expected' => new Diff(-7, 0),
+        ];
+
+        yield 'empty' => [
+            'data'     => '',
+            'expected' => new Diff(0, 0),
+        ];
+
+        yield 'new line only' => [
+            'data'     => '\n',
+            'expected' => new Diff(0, 0),
+        ];
+    }
+
+    /**
+     * @dataProvider generateParseableData
+     *
+     * @covers ::parse()
+     */
+    public function testItCanParse(string $data, Diff $expected): void
+    {
+        $result = Diff::parse($data);
+
+        $this->assertEquals($expected, $result);
+    }
+}

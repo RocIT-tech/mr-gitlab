@@ -3,18 +3,47 @@ services:
         autowire: true
         autoconfigure: true
 
-    App\Cli\:
-        resource: '%kernel.project_dir%/src/Cli'
+    # ================= #
+    # Application       #
+    # ================= #
+    App\Application\Cli\:
+        resource: '%kernel.project_dir%/src/Application/Cli'
 
-    App\Git\Serializer\:
-        resource: '%kernel.project_dir%/src/Git/Serializer'
-
-    App\Metrics\Gitlab\:
-        resource: '%kernel.project_dir%/src/Metrics/Gitlab'
+    # ================= #
+    # Domain            #
+    # ================= #
+    App\Domain\Metrics\Gitlab\:
+        resource: '%kernel.project_dir%/src/Domain/Metrics/Gitlab'
         tags: ['metrics.gitlab']
 
-    App\Metrics\StatsAggregator: ~
+    App\Domain\Metrics\StatsAggregator: ~
 
-    App\Metrics\MetricsAggregator:
+    App\Domain\Metrics\MetricsAggregator:
         arguments:
             $metrics: !tagged_locator { tag: 'metrics.gitlab', default_index_method: 'supportedMetric' }
+
+    App\Domain\Metrics\MetricCalculatorCollection:
+        arguments:
+            $metrics: !tagged_locator { tag: 'metrics.gitlab', default_index_method: 'supportedMetric' }
+
+    # ================= #
+    # Infrastructure    #
+    # ================= #
+    App\Infrastructure\Gitlab\Client\HttpClientFactory:
+        arguments:
+            $gitlabClient: '@gitlab.client'
+
+    App\Infrastructure\Gitlab\Client\MergeRequest\QueryHandler\:
+        resource: '%kernel.project_dir%/src/Infrastructure/Gitlab/Client/MergeRequest/QueryHandler/**/*Handler.php'
+        autoconfigure: false
+        tags:
+            - { name: 'messenger.message_handler', bus: 'query.bus' }
+
+    App\Infrastructure\Doctrine\ConfigLoader: ~
+    App\Domain\Tenant\ConfigLoaderInterface: '@App\Infrastructure\Doctrine\ConfigLoader'
+
+    App\Infrastructure\Gitlab\Serializer\:
+        resource: '%kernel.project_dir%/src/Infrastructure/Gitlab/Serializer'
+
+    App\Infrastructure\Serializer\:
+        resource: '%kernel.project_dir%/src/Infrastructure/Serializer'

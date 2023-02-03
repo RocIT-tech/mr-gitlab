@@ -3,9 +3,9 @@ services:
         autowire: true
         autoconfigure: true
 
-    App\DataFixtures\:
-        resource: '%kernel.project_dir%/src/DataFixtures'
+    App\Infrastructure\Doctrine\DataFixtures\:
+        resource: '%kernel.project_dir%/src/Infrastructure/Doctrine/DataFixtures'
 
-    App\DataFixtures\ConfigFixtures:
+    App\Infrastructure\Doctrine\DataFixtures\ConfigFixtures:
         arguments:
             $configDirectory: '%kernel.project_dir%/user-config'
