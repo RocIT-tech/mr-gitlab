@@ -4,34 +4,30 @@ declare(strict_types=1);
 
 namespace App\Tests\Infrastructure\Gitlab\Client\MergeRequest\Model\Thread;
 
+use App\Infrastructure\Gitlab\Client\MergeRequest\Model\Thread\Note;
+use App\Infrastructure\Gitlab\Client\MergeRequest\Model\Thread\NotePosition;
+use App\Infrastructure\Gitlab\Client\MergeRequest\Model\Thread\Notes;
 use Exception;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\UsesClass;
 use PHPUnit\Framework\TestCase;
 
-/**
- * @group unit
- *
- * @coversDefaultClass \App\Infrastructure\Gitlab\Client\MergeRequest\Model\Thread\Notes
- * @covers ::__construct
- *
- * @uses \App\Infrastructure\Gitlab\Client\MergeRequest\Model\Thread\Note
- * @uses \App\Infrastructure\Gitlab\Client\MergeRequest\Model\Thread\NotePosition
- */
+#[Group('unit')]
+#[CoversClass(Notes::class)]
+//#[CoversFunction('__construct()')]
+#[UsesClass(Note::class)]
+#[UsesClass(NotePosition::class)]
 final class NotesTest extends TestCase
 {
-    /**
-     * @covers ::isEmpty()
-     */
+    //#[CoversFunction('isEmpty()')]
     public function testItIsEmpty(): void
     {
         $notes = NotesFixture::empty();
         $this->assertTrue($notes->isEmpty());
     }
 
-    /**
-     * @covers ::first()
-     *
-     * @uses \App\Infrastructure\Gitlab\Client\MergeRequest\Model\Thread\Notes::isEmpty
-     */
+    //#[CoversFunction('first()')]
     public function testCannotCallFirstOnEmpty(): void
     {
         $notes = NotesFixture::empty();
@@ -41,11 +37,7 @@ final class NotesTest extends TestCase
         $notes->first();
     }
 
-    /**
-     * @covers ::first()
-     *
-     * @uses \App\Infrastructure\Gitlab\Client\MergeRequest\Model\Thread\Notes::isEmpty
-     */
+    //#[CoversFunction('first()')]
     public function testCanFetchTheFirstNoteIfNotEmpty(): void
     {
         $notes = NotesFixture::default();
@@ -54,9 +46,7 @@ final class NotesTest extends TestCase
         $this->assertSame('[suggestion][typo, quality]This is a note.', $note->body);
     }
 
-    /**
-     * @covers ::count()
-     */
+    //#[CoversFunction('count()')]
     public function testCountTheNumberOfNotes(): void
     {
         $notes = NotesFixture::default(10);

@@ -8,20 +8,20 @@ use App\Domain\Metrics\Category;
 use App\Domain\Metrics\Gitlab\Notes\ParseNoteTrait;
 use App\Domain\Metrics\Severity;
 use Generator;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\UsesClass;
 use PHPUnit\Framework\TestCase;
 
-/**
- * @group unit
- *
- * @coversDefaultClass \App\Domain\Metrics\Gitlab\Notes\ParseNoteTrait
- * @covers ::parseNoteForLabels()
- *
- * @uses \App\Domain\Metrics\Category
- * @uses \App\Domain\Metrics\Severity
- */
+#[Group('unit')]
+#[CoversClass(ParseNoteTrait::class)]
+//#[CoversFunction('parseNoteForLabels()')]
+#[UsesClass(Category::class)]
+#[UsesClass(Severity::class)]
 final class ParseNoteTraitTest extends TestCase
 {
-    public function generateNotesToTest(): Generator
+    public static function generateNotesToTest(): Generator
     {
         yield 'no anchors' => [
             'note'       => 'This is a simple note.',
@@ -67,12 +67,12 @@ final class ParseNoteTraitTest extends TestCase
     }
 
     /**
-     * @dataProvider generateNotesToTest
-     *
      * @param Category[] $categories
      */
+    #[DataProvider('generateNotesToTest')]
     public function testCanParseNoteForLabels(string $note, Severity $severity, array $categories): void
     {
+        /** @method string parse(string $value) */
         $fixture = $this->buildFixture();
 
         [$severityParsed, $categoriesParsed] = $fixture->parse($note);
@@ -85,6 +85,9 @@ final class ParseNoteTraitTest extends TestCase
         return new class {
             use ParseNoteTrait;
 
+            /**
+             * @return array{Severity, non-empty-array<int, Category>}
+             */
             public function parse(string $note): array
             {
                 return $this->parseNoteForLabels($note);

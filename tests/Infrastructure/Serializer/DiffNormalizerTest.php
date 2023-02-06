@@ -6,6 +6,8 @@ namespace App\Tests\Infrastructure\Serializer;
 
 use App\Domain\Git\Diff;
 use App\Infrastructure\Serializer\DiffNormalizer;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -13,11 +15,11 @@ use PHPUnit\Framework\TestCase;
  *
  * @coversDefaultClass \App\Infrastructure\Serializer\DiffNormalizer
  */
+#[Group('unit')]
+#[CoversClass(DiffNormalizer::class)]
 final class DiffNormalizerTest extends TestCase
 {
-    /**
-     * @covers ::supportsDenormalization()
-     */
+    //#[CoversFunction('supportsDenormalization()')]
     public function testSupportsOnlyDiffObjectInDiffFormat(): void
     {
         $diffNormalizer = new DiffNormalizer();

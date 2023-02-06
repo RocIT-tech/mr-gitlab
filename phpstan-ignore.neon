@@ -53,11 +53,6 @@ parameters:
 			path: tests/Domain/Metrics/Gitlab/Notes/ParseNoteTraitTest.php
 
 		-
-			message: "#^Method class@anonymous/tests/Domain/Metrics/Gitlab/Notes/ParseNoteTraitTest\\.php\\:85\\:\\:parse\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: tests/Domain/Metrics/Gitlab/Notes/ParseNoteTraitTest.php
-
-		-
 			message: "#^Parameter \\$success of static method App\\\\Domain\\\\Metrics\\\\ValidatedMetric\\:\\:forMetric\\(\\) expects bool, mixed given\\.$#"
 			count: 1
 			path: src/Domain/Metrics/MetricsAggregator.php

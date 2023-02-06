@@ -8,14 +8,14 @@ use App\Domain\Metrics\Metric;
 use App\Domain\Tenant\ConfigMetrics;
 use Generator;
 use LogicException;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;
 
-/**
- * @group unit
- *
- * @coversDefaultClass \App\Domain\Tenant\ConfigMetrics
- * @covers ::__construct()
- */
+#[Group('unit')]
+#[CoversClass(ConfigMetrics::class)]
+//#[CoversFunction('__construct()')]
 final class ConfigMetricsTest extends TestCase
 {
     private const DEFAULT = [
@@ -69,7 +69,7 @@ final class ConfigMetricsTest extends TestCase
         ],
     ];
 
-    public function generateDisabledConfigs(): Generator
+    public static function generateDisabledConfigs(): Generator
     {
         yield 'empty' => [
             'config'          => [],
@@ -114,12 +114,10 @@ final class ConfigMetricsTest extends TestCase
     }
 
     /**
-     * @dataProvider generateDisabledConfigs
-     *
-     * @covers ::isMetricDisabled()
-     *
      * @param array<string, array{enabled?: bool, constraint?: string}> $config
      */
+    #[DataProvider('generateDisabledConfigs')]
+    //#[CoversFunction('isMetricDisabled()')]
     public function testMetricIsDisabled(array $config, int $metricsDisabled): void
     {
         $configItemMetrics = new ConfigMetrics($config);
@@ -132,7 +130,7 @@ final class ConfigMetricsTest extends TestCase
         $this->assertSame($metricsDisabled, $countDisabled);
     }
 
-    public function generateAlteredConfigs(): Generator
+    public static function generateAlteredConfigs(): Generator
     {
         $defaultHasConstraint = [
             Metric::NumberOfThreads->value           => false,
@@ -184,15 +182,13 @@ final class ConfigMetricsTest extends TestCase
     }
 
     /**
-     * @dataProvider generateAlteredConfigs
-     *
-     * @covers ::isMetricDisabled()
-     * @covers ::hasConstraint()
-     * @covers ::getConstraint()
-     *
      * @param array<string, array{enabled?: bool, constraint?: string}> $config
      * @param array<string, bool>                                       $hasConstraints
      */
+    #[DataProvider('generateAlteredConfigs')]
+    //#[CoversFunction('isMetricDisabled()')]
+    //#[CoversFunction('hasConstraint()')]
+    //#[CoversFunction('getConstraint()')]
     public function testConstraintIsSet(array $config, array $hasConstraints): void
     {
         $configItemMetrics = new ConfigMetrics($config);

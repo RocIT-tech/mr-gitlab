@@ -9,19 +9,29 @@ use App\Infrastructure\Gitlab\Client\MergeRequest\Model\Changes;
 
 final class ChangesFixture
 {
-    public static function empty(): Changes
+    /**
+     * @return ($asArray is true ? array<int, Change> : Changes)
+     */
+    public static function empty(bool $asArray = false): Changes|array
     {
-        return new Changes([]);
+        $changesAsArray = [];
+
+        return true === $asArray ? $changesAsArray : new Changes($changesAsArray);
     }
 
-    public static function default(): Changes
+    /**
+     * @return ($asArray is true ? array<int, Change> : Changes)
+     */
+    public static function default(bool $asArray = false): Changes|array
     {
-        return new Changes([
+        $changesAsArray = [
             new Change('/file/1', new \App\Domain\Git\Diff(10, 5)),
             new Change('/file/2', new \App\Domain\Git\Diff(10, 5)),
             new Change('/file/3', new \App\Domain\Git\Diff(10, 5)),
             new Change('/file/4', new \App\Domain\Git\Diff(10, 5)),
             new Change('/file/5', new \App\Domain\Git\Diff(10, 5)),
-        ]);
+        ];
+
+        return true === $asArray ? $changesAsArray : new Changes($changesAsArray);
     }
 }

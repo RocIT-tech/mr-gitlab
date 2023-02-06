@@ -5,71 +5,71 @@ declare(strict_types=1);
 namespace App\Tests\Infrastructure\Gitlab\Client\MergeRequest\Model;
 
 use App\Domain\Git\Diff;
+use App\Infrastructure\Gitlab\Client\MergeRequest\Model\Change;
 use App\Infrastructure\Gitlab\Client\MergeRequest\Model\Changes;
 use Generator;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\UsesClass;
 use PHPUnit\Framework\TestCase;
 
-/**
- * @group unit
- *
- * @coversDefaultClass \App\Infrastructure\Gitlab\Client\MergeRequest\Model\Changes
- * @covers ::__construct
- */
+#[Group('unit')]
+#[CoversClass(Changes::class)]
+#[UsesClass(Diff::class)]
 final class ChangesTest extends TestCase
 {
     /**
-     * @return Generator<string, array{changes: Changes, expected: Diff}>
+     * @return Generator<string, array{changes: array<int, Change>, expected: Diff}>
      */
-    public function generateChangesForDiff(): Generator
+    public static function generateChangesForDiff(): Generator
     {
         yield 'empty' => [
-            'changes'  => ChangesFixture::empty(),
+            'changes'  => ChangesFixture::empty(true),
             'expected' => new Diff(0, 0),
         ];
 
         yield 'some changes' => [
-            'changes'  => ChangesFixture::default(),
+            'changes'  => ChangesFixture::default(true),
             'expected' => new Diff(50, 25),
         ];
     }
 
     /**
-     * @covers ::totalDiff()
-     *
-     * @uses         \App\Domain\Git\Diff
-     *
-     * @dataProvider generateChangesForDiff
+     * @param array<int, Change> $changes
      */
-    public function testCanCalculateTheAddedAndRemovedLines(Changes $changes, Diff $expected): void
+    #[DataProvider('generateChangesForDiff')]
+    public function testCanCalculateTheAddedAndRemovedLines(array $changes, Diff $expected): void
     {
+        $changes = new Changes($changes);
         $totalDiff = $changes->totalDiff();
         $this->assertEquals($expected, $totalDiff);
         $this->assertSame($totalDiff, $changes->totalDiff(), 'Cache miss.');
     }
 
     /**
-     * @return Generator<string, array{changes: Changes, expected: int}>
+     * @return Generator<string, array{changes: array<int, Change>, expected: int}>
      */
-    public function generateChangesForCount(): Generator
+    public static function generateChangesForCount(): Generator
     {
         yield 'empty' => [
-            'changes'  => ChangesFixture::empty(),
+            'changes'  => ChangesFixture::empty(true),
             'expected' => 0,
         ];
 
         yield 'some changes' => [
-            'changes'  => ChangesFixture::default(),
+            'changes'  => ChangesFixture::default(true),
             'expected' => 5,
         ];
     }
 
     /**
-     * @covers ::count()
-     *
-     * @dataProvider generateChangesForCount
+     * @param array<int, Change> $changes
      */
-    public function testItCanCountTheChanges(Changes $changes, int $expected): void
+    #[DataProvider('generateChangesForCount')]
+    public function testItCanCountTheChanges(array $changes, int $expected): void
     {
+        $changes = new Changes($changes);
         $this->assertCount($expected, $changes);
     }
 }

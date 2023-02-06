@@ -6,18 +6,18 @@ namespace App\Tests\Domain\Git;
 
 use App\Domain\Git\Diff;
 use Generator;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;
 
-/**
- * @group unit
- *
- * @coversDefaultClass \App\Domain\Git\Diff
- *
- * @covers ::__construct
- */
+#[Group('unit')]
+#[CoversClass(Diff::class)]
+//#[CoversFunction('__construct()')]
+//#[CoversFunction('parse()')]
 final class DiffTest extends TestCase
 {
-    public function generateParseableData(): Generator
+    public static function generateParseableData(): Generator
     {
         yield 'only additions' => [
             'data'     => <<<DIFF
@@ -58,15 +58,19 @@ final class DiffTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider generateParseableData
-     *
-     * @covers ::parse()
-     */
+    #[DataProvider('generateParseableData')]
     public function testItCanParse(string $data, Diff $expected): void
     {
         $result = Diff::parse($data);
 
         $this->assertEquals($expected, $result);
+    }
+
+    public function testDefaults(): void
+    {
+        $diff = new Diff();
+
+        $this->assertSame(0, $diff->added);
+        $this->assertSame(0, $diff->removed);
     }
 }

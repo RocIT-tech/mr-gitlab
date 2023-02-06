@@ -4,32 +4,38 @@ declare(strict_types=1);
 
 namespace App\Tests\Domain\Metrics;
 
+use App\Domain\Metrics\Category;
+use App\Domain\Metrics\Gitlab\Notes\ParseNoteTrait;
+use App\Domain\Metrics\Severity;
 use App\Domain\Metrics\StatsAggregator;
 use App\Domain\Metrics\StatsResult;
 use App\Infrastructure\Gitlab\Client\MergeRequest\Model\Details;
+use App\Infrastructure\Gitlab\Client\MergeRequest\Model\Thread;
+use App\Infrastructure\Gitlab\Client\MergeRequest\Model\Thread\Notes;
+use App\Infrastructure\Gitlab\Client\MergeRequest\Model\Threads;
 use App\Tests\Infrastructure\Gitlab\Client\MergeRequest\Model\DetailsFixture;
 use Generator;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\UsesClass;
 use PHPUnit\Framework\TestCase;
 
-/**
- * @group unit
- *
- * @coversDefaultClass \App\Domain\Metrics\StatsAggregator
- * @covers ::__construct()
- * @covers ::getResult()
- * @covers ::calculateStats()
- * @covers \App\Domain\Metrics\Gitlab\Notes\ParseNoteTrait::parseNoteForLabels
- *
- * @uses  \App\Infrastructure\Gitlab\Client\MergeRequest\Model\Details
- * @uses  \App\Infrastructure\Gitlab\Client\MergeRequest\Model\Thread
- * @uses  \App\Infrastructure\Gitlab\Client\MergeRequest\Model\Threads
- * @uses  \App\Infrastructure\Gitlab\Client\MergeRequest\Model\Thread\Notes
- * @uses  \App\Domain\Metrics\Category
- * @uses  \App\Domain\Metrics\Severity
- */
+#[Group('unit')]
+#[CoversClass(StatsAggregator::class)]
+//#[CoversFunction('__construct()')]
+//#[CoversFunction('getResult()')]
+//#[CoversFunction('calculateStats()')]
+#[CoversClass(ParseNoteTrait::class)] // '::parseNoteForLabels()'
+#[UsesClass(Details::class)]
+#[UsesClass(Thread::class)]
+#[UsesClass(Threads::class)]
+#[UsesClass(Notes::class)]
+#[UsesClass(Category::class)]
+#[UsesClass(Severity::class)]
 final class StatsAggregatorTest extends TestCase
 {
-    public function generateMergeRequestDetails(): Generator
+    public static function generateMergeRequestDetails(): Generator
     {
         yield 'empty details' => [
             'details' => DetailsFixture::empty(),
@@ -121,9 +127,7 @@ final class StatsAggregatorTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider generateMergeRequestDetails
-     */
+    #[DataProvider('generateMergeRequestDetails')]
     public function testItCalculateTheStats(Details $details, StatsResult $result): void
     {
         $statsAggregator  = new StatsAggregator();
