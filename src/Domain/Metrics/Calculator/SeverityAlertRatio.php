@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Domain\Metrics\Gitlab;
+namespace App\Domain\Metrics\Calculator;
 
 use App\Domain\Metrics\Metric;
 use App\Infrastructure\Gitlab\Client\MergeRequest\Model\Details;

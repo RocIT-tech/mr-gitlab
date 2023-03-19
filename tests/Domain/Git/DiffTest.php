@@ -58,14 +58,6 @@ final class DiffTest extends TestCase
         ];
     }
 
-    #[DataProvider('generateParseableData')]
-    public function testItCanParse(string $data, Diff $expected): void
-    {
-        $result = Diff::parse($data);
-
-        $this->assertEquals($expected, $result);
-    }
-
     public function testDefaults(): void
     {
         $diff = new Diff();

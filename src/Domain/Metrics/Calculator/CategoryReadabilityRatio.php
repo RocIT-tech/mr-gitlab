@@ -2,30 +2,30 @@
 
 declare(strict_types=1);
 
-namespace App\Domain\Metrics\Gitlab;
+namespace App\Domain\Metrics\Calculator;
 
 use App\Domain\Metrics\Metric;
 use App\Infrastructure\Gitlab\Client\MergeRequest\Model\Details;
 
-final class CategorySecurityRatio extends CategoryRatio
+final class CategoryReadabilityRatio extends CategoryRatio
 {
     public static function supportedMetric(): string
     {
-        return Metric::SecurityRatio->value;
+        return Metric::ReadabilityRatio->value;
     }
 
     public function getDefaultConstraint(): string
     {
-        return 'value == 0';
+        return 'value < 1';
     }
 
     public static function getDefaultPriority(): int
     {
-        return 10;
+        return 15;
     }
 
     protected function getCategoryValue(Details $mergeRequestDetails): float
     {
-        return $this->statsAggregator->getResult($mergeRequestDetails)->countCategorySecurity;
+        return $this->statsAggregator->getResult($mergeRequestDetails)->countCategoryReadability;
     }
 }

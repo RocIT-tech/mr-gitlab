@@ -12,8 +12,8 @@ services:
     # ================= #
     # Domain            #
     # ================= #
-    App\Domain\Metrics\Gitlab\:
-        resource: '%kernel.project_dir%/src/Domain/Metrics/Gitlab'
+    App\Domain\Metrics\Calculator\:
+        resource: '%kernel.project_dir%/src/Domain/Metrics/Calculator'
         tags: ['metrics.gitlab']
 
     App\Domain\Metrics\StatsAggregator: ~
@@ -44,6 +44,6 @@ services:
 
     App\Infrastructure\Gitlab\Serializer\:
         resource: '%kernel.project_dir%/src/Infrastructure/Gitlab/Serializer'
-
-    App\Infrastructure\Serializer\:
-        resource: '%kernel.project_dir%/src/Infrastructure/Serializer'
+        exclude:
+            - '%kernel.project_dir%/src/Infrastructure/Gitlab/Serializer/GitlabNormalizer.php'
+        tags: ['gitlab.normalizer']

@@ -2,19 +2,18 @@
 
 declare(strict_types=1);
 
-namespace App\Domain\Metrics\Gitlab;
+namespace App\Domain\Metrics\Calculator;
 
 use App\Domain\Metrics\Metric;
 use App\Domain\Metrics\MetricCalculatorInterface;
 use App\Domain\Metrics\MetricResult;
 use App\Infrastructure\Gitlab\Client\MergeRequest\Model\Details;
-use function abs;
 
-final class LinesRemoved implements MetricCalculatorInterface
+final class LinesAdded implements MetricCalculatorInterface
 {
     public static function supportedMetric(): string
     {
-        return Metric::LinesRemoved->value;
+        return Metric::LinesAdded->value;
     }
 
     public function getDefaultConstraint(): string
@@ -24,15 +23,15 @@ final class LinesRemoved implements MetricCalculatorInterface
 
     public function result(Details $mergeRequestDetails): MetricResult
     {
-        $linesRemoved = abs($mergeRequestDetails->changes->totalDiff()->removed);
+        $linesAdded = $mergeRequestDetails->changes->totalDiff()->added;
 
         return new MetricResult(
-            currentValue: (string) $linesRemoved,
+            currentValue: (string) $linesAdded,
         );
     }
 
     public static function getDefaultPriority(): int
     {
-        return 50;
+        return 60;
     }
 }

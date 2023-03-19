@@ -4,6 +4,10 @@ declare(strict_types=1);
 
 namespace App\Infrastructure\Gitlab\Client\MergeRequest\QueryHandler;
 
+use App\Domain\MergeRequest\Id;
+use App\Domain\MergeRequest\MergeRequest;
+use App\Domain\MergeRequest\Metadata;
+use App\Domain\MergeRequest\Type;
 use App\Infrastructure\Gitlab\Client\HttpClientFactory;
 use App\Infrastructure\Gitlab\Client\MergeRequest\Model\Change;
 use App\Infrastructure\Gitlab\Client\MergeRequest\Model\Changes;
@@ -11,6 +15,8 @@ use App\Infrastructure\Gitlab\Client\MergeRequest\Model\Details;
 use App\Infrastructure\Gitlab\Client\MergeRequest\Model\Thread;
 use App\Infrastructure\Gitlab\Client\MergeRequest\Model\Threads;
 use App\Infrastructure\Gitlab\Client\MergeRequest\Query\GetDetailsQuery;
+use App\Infrastructure\Gitlab\Serializer\GitlabNormalizer;
+use Psr\Clock\ClockInterface;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
@@ -23,6 +29,7 @@ final class GetDetailsQueryHandler
     public function __construct(
         private readonly HttpClientFactory   $httpClientFactory,
         private readonly SerializerInterface $serializer,
+        private readonly ClockInterface $clock,
     ) {
     }
 
@@ -34,11 +41,14 @@ final class GetDetailsQueryHandler
         $getChangesRequests = $this->getChanges($gitlabClient, $getDetailsQuery);
         $getThreadsRequests = $this->getThreads($gitlabClient, $getDetailsQuery);
 
+//        dd($getDetailsRequest->toArray(true));
+
         /** @var Details $details */
         $details = $this->serializer->deserialize(
             $getDetailsRequest->getContent(true),
             Details::class,
             JsonEncoder::FORMAT,
+            [GitlabNormalizer::CONTEXT => true],
         );
 
         $changes = [];
@@ -47,6 +57,7 @@ final class GetDetailsQueryHandler
                 $getChangesRequest->getContent(true),
                 sprintf('%s[]', Change::class),
                 JsonEncoder::FORMAT,
+                [GitlabNormalizer::CONTEXT => true],
             );
         }
         $details->changes = new Changes(array_merge(...$changes));
@@ -57,10 +68,23 @@ final class GetDetailsQueryHandler
                 $getThreadsRequest->getContent(true),
                 sprintf('%s[]', Thread::class),
                 JsonEncoder::FORMAT,
+                [GitlabNormalizer::CONTEXT => true],
             );
         }
 
         $details->threads = new Threads(array_merge(...$threads));
+
+//        $result = new MergeRequest(
+//            Id::generate($this->clock),
+//            $details->title,
+//            $openedAt, // TODO
+//            $description, // TODO
+//            new Metadata( // TODO : add project id
+//                Type::Gitlab,
+//                $getDetailsQuery->mergeRequestIid,
+//                $getDetailsQuery->getBaseUrl(), // TODO
+//            ),
+//        );
 
         return $details;
     }

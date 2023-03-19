@@ -78,7 +78,7 @@ final class ParseMergeRequest extends Command
         /** @var Details $mergeRequestDetails */
         $mergeRequestDetails = $this->handle($getDetailsQuery);
 
-        $io->title($mergeRequestDetails->web_url);
+        $io->title($mergeRequestDetails->webUrl);
 
         $metricResults = $this->metricsAggregator->getResult($config, $mergeRequestDetails);
 

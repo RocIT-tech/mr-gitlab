@@ -6,7 +6,6 @@ namespace App\Infrastructure\Gitlab\Serializer;
 
 use App\Domain\Git\Diff;
 use App\Infrastructure\Gitlab\Client\MergeRequest\Model\Change;
-use App\Infrastructure\Serializer\DiffNormalizer;
 use Symfony\Component\Serializer\Normalizer\DenormalizerAwareInterface;
 use Symfony\Component\Serializer\Normalizer\DenormalizerAwareTrait;
 use Symfony\Component\Serializer\Normalizer\DenormalizerInterface;
@@ -22,7 +21,7 @@ final class ChangeNormalizer implements DenormalizerInterface, DenormalizerAware
     {
         return new Change(
             $data['new_path'],
-            $this->denormalizer->denormalize($data['diff'], Diff::class, DiffNormalizer::FORMAT, $context)
+            $this->denormalizer->denormalize($data, Diff::class, DiffNormalizer::FORMAT, $context)
         );
     }
 

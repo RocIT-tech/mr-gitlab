@@ -4,10 +4,11 @@ declare(strict_types=1);
 
 namespace App;
 
+use App\Infrastructure\Gitlab\DependencyInjection\CompilerPass\AutoWrapGitlabNormalizersPass;
 use Symfony\Bundle\FrameworkBundle\Kernel\MicroKernelTrait;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 use Symfony\Component\HttpKernel\Kernel as BaseKernel;
-use Symfony\Component\Routing\Loader\Configurator\RoutingConfigurator;
 
 final class Kernel extends BaseKernel
 {
@@ -21,5 +22,14 @@ final class Kernel extends BaseKernel
         $container->import('../config/services.yaml');
         $container->import('../config/{services}/**/*.yaml');
         $container->import('../config/{services}_' . $this->environment . '.yaml');
+    }
+
+    protected function getContainerBuilder(): ContainerBuilder
+    {
+        $container = parent::getContainerBuilder();
+
+        $container->addCompilerPass(new AutoWrapGitlabNormalizersPass());
+
+        return $container;
     }
 }

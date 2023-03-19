@@ -2,19 +2,14 @@
 
 declare(strict_types=1);
 
-namespace App\Tests\Infrastructure\Serializer;
+namespace App\Tests\Infrastructure\Gitlab\Serializer;
 
 use App\Domain\Git\Diff;
-use App\Infrastructure\Serializer\DiffNormalizer;
+use App\Infrastructure\Gitlab\Serializer\DiffNormalizer;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;
 
-/**
- * @group unit
- *
- * @coversDefaultClass \App\Infrastructure\Serializer\DiffNormalizer
- */
 #[Group('unit')]
 #[CoversClass(DiffNormalizer::class)]
 final class DiffNormalizerTest extends TestCase

@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Tests\Domain\Metrics\Gitlab\Notes;
 
 use App\Domain\Metrics\Category;
-use App\Domain\Metrics\Gitlab\Notes\ParseNoteTrait;
+use App\Domain\Metrics\Calculator\Notes\ParseNoteTrait;
 use App\Domain\Metrics\Severity;
 use Generator;
 use PHPUnit\Framework\Attributes\CoversClass;

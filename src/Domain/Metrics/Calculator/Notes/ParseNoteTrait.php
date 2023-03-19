@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Domain\Metrics\Gitlab\Notes;
+namespace App\Domain\Metrics\Calculator\Notes;
 
 use App\Domain\Metrics\Category;
 use App\Domain\Metrics\Severity;

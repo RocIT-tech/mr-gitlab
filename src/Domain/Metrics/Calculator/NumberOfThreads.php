@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Domain\Metrics\Gitlab;
+namespace App\Domain\Metrics\Calculator;
 
 use App\Domain\Metrics\Metric;
 use App\Domain\Metrics\MetricCalculatorInterface;
@@ -10,11 +10,11 @@ use App\Domain\Metrics\MetricResult;
 use App\Infrastructure\Gitlab\Client\MergeRequest\Model\Details;
 use function count;
 
-final class FilesChanged implements MetricCalculatorInterface
+final class NumberOfThreads implements MetricCalculatorInterface
 {
     public static function supportedMetric(): string
     {
-        return Metric::FilesChanged->value;
+        return Metric::NumberOfThreads->value;
     }
 
     public function getDefaultConstraint(): string
@@ -24,15 +24,15 @@ final class FilesChanged implements MetricCalculatorInterface
 
     public function result(Details $mergeRequestDetails): MetricResult
     {
-        $filesChanged = count($mergeRequestDetails->changes);
+        $numberOfThreads = count($mergeRequestDetails->threads);
 
         return new MetricResult(
-            currentValue: (string) $filesChanged,
+            currentValue: (string) $numberOfThreads,
         );
     }
 
     public static function getDefaultPriority(): int
     {
-        return 70;
+        return 100;
     }
 }

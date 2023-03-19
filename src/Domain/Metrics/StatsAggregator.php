@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Domain\Metrics;
 
-use App\Domain\Metrics\Gitlab\Notes\ParseNoteTrait;
+use App\Domain\Metrics\Calculator\Notes\ParseNoteTrait;
 use App\Infrastructure\Gitlab\Client\MergeRequest\Model\Details;
 use App\Infrastructure\Gitlab\Client\MergeRequest\Model\Thread;
 use WeakMap;

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Infrastructure\Gitlab\Serializer;
 
 use App\Infrastructure\Gitlab\Client\MergeRequest\Model\Details;
+use DateTimeImmutable;
 use Symfony\Component\Serializer\Normalizer\DenormalizerAwareInterface;
 use Symfony\Component\Serializer\Normalizer\DenormalizerAwareTrait;
 use Symfony\Component\Serializer\Normalizer\DenormalizerInterface;
@@ -21,7 +22,9 @@ final class DetailsNormalizer implements DenormalizerInterface, DenormalizerAwar
         return new Details(
             id: $data['id'],
             title: $data['title'],
-            web_url: $data['web_url'],
+            description: $data['description'],
+            webUrl: $data['web_url'],
+            createdAt: $this->denormalizer->denormalize($data['created_at'], DateTimeImmutable::class, $format, $context),
         );
     }
 

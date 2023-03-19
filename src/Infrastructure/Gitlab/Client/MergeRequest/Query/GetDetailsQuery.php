@@ -48,4 +48,9 @@ final class GetDetailsQuery
     {
         return "{$this->getBaseUrl()}/discussions";
     }
+
+    public function getCommitsUrl(): string
+    {
+        return "{$this->getBaseUrl()}/commits";
+    }
 }

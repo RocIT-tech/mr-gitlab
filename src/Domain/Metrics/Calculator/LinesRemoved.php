@@ -2,37 +2,37 @@
 
 declare(strict_types=1);
 
-namespace App\Domain\Metrics\Gitlab;
+namespace App\Domain\Metrics\Calculator;
 
 use App\Domain\Metrics\Metric;
 use App\Domain\Metrics\MetricCalculatorInterface;
 use App\Domain\Metrics\MetricResult;
 use App\Infrastructure\Gitlab\Client\MergeRequest\Model\Details;
-use function count;
+use function abs;
 
-final class NumberOfThreads implements MetricCalculatorInterface
+final class LinesRemoved implements MetricCalculatorInterface
 {
     public static function supportedMetric(): string
     {
-        return Metric::NumberOfThreads->value;
+        return Metric::LinesRemoved->value;
     }
 
     public function getDefaultConstraint(): string
     {
-        return 'value < 30';
+        return 'value < 500';
     }
 
     public function result(Details $mergeRequestDetails): MetricResult
     {
-        $numberOfThreads = count($mergeRequestDetails->threads);
+        $linesRemoved = abs($mergeRequestDetails->changes->totalDiff()->removed);
 
         return new MetricResult(
-            currentValue: (string) $numberOfThreads,
+            currentValue: (string) $linesRemoved,
         );
     }
 
     public static function getDefaultPriority(): int
     {
-        return 100;
+        return 50;
     }
 }
